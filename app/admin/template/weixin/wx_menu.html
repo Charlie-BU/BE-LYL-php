@@ -1,0 +1,288 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        {include file='public:left-menu'/}
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        {include file='public:nav-header' title="微信管理" subTitle="公众号菜单"/}
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-toolbar">
+                                <div class="card-toolbar-center">
+                                    <a href="" class="table-btn btn-dark"><i class="mdi mdi-replay"></i></a>
+                                    <button class="table-btn btn-theme">一级菜单最多可添加三个 二级菜单最多可添加五个</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <form method="post" action="{:url('Weixin/wx_menu_save')}" id="form">
+                                <table class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>操作</th>
+                                        <th>菜单名称</th>
+                                        <th>菜单类型</th>
+                                        <th>菜单URL</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbody">
+                                    {volist name="$list" id="parent"}
+                                    <tr class="parent" data-id="{$parent.id}">
+                                        <td>
+                                            <a class="table-btn btn-danger" data-id="{$parent.id}" onclick="shanchu('{$parent.id}',1,this)"><i class="mdi mdi-delete"></i>删除</a>
+                                        </td>
+                                        <td>
+                                            <div class="form-inline">
+                                                <div class="con"></div>
+                                                <input type="text" class="table-input" name="menu[{$parent.id}][name]" value="{$parent.name}">
+                                                <a class="table-btn btn-theme add-two" data-id="{$parent.id}"><i class="mdi mdi-plus-circle"></i>添加</a>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <select class="input-group-select" name="menu[{$parent.id}][type]">
+                                                    <option value="view" {if $parent.type=='view'}selected{/if}>链接</option>
+                                                    <option value="click" {if $parent.type=='click'}selected{/if}>触发关键字</option>
+                                                    <option value="scancode_push" {if $parent.type=='scancode_push'}selected{/if}>扫码</option>
+                                                    <option value="scancode_waitmsg" {if $parent.type=='scancode_waitmsg'}selected{/if}> 扫码（等待信息）</option>
+                                                    <option value="pic_sysphoto" {if $parent.type=='pic_sysphoto'}selected{/if}>系统拍照发图</option>
+                                                    <option value="pic_photo_or_album" {if $parent.type=='pic_photo_or_album'}selected{/if}>拍照或者相册发图</option>
+                                                    <option value="pic_weixin" {if $parent.type=='pic_weixin'}selected{/if}>微信相册发图</option>
+                                                    <option value="location_select" {if $parent.type=='location_select'}selected{/if}>地理位置</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <input type="text" name="menu[{$parent.id}][value]" class="table-input" value="{$parent.value}">
+                                                <input type="hidden" name="menu[{$parent.id}][id]" class="table-input" value="{$parent.id}">
+                                                <input type="hidden" name="menu[{$parent.id}][pid]" class="table-input" value="{$parent.pid}">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {volist name="$parent.item" id="item"}
+                                    <tr class="item item{$parent.id}">
+                                        <td>
+                                            <a class="table-btn btn-danger" onclick="shanchu('{$item.id}',2,this)"><i class="mdi mdi-delete"></i>删除</a>
+                                        </td>
+                                        <td>
+                                            <div class="form-inline">
+                                                <div class="con"></div>
+                                                <input type="text" name="menu[{$parent.id}][item][{$item.id}][name]" class="table-input" value="{$item.name}">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <select class="input-group-select" name="menu[{$parent.id}][item][{$item.id}][type]">
+                                                    <option value="view" {if $item.type=='view'}selected{/if}>链接</option>
+                                                    <option value="click" {if $item.type=='click'}selected{/if}>触发关键字</option>
+                                                    <option value="scancode_push" {if $item.type=='scancode_push'}selected{/if}>扫码</option>
+                                                    <option value="scancode_waitmsg" {if $item.type=='scancode_waitmsg'}selected{/if}> 扫码（等待信息）</option>
+                                                    <option value="pic_sysphoto" {if $item.type=='pic_sysphoto'}selected{/if}>系统拍照发图</option>
+                                                    <option value="pic_photo_or_album" {if $item.type=='pic_photo_or_album'}selected{/if}>拍照或者相册发图</option>
+                                                    <option value="pic_weixin" {if $item.type=='pic_weixin'}selected{/if}>微信相册发图</option>
+                                                    <option value="location_select" {if $item.type=='location_select'}selected{/if}>地理位置</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <input type="text" name="menu[{$parent.id}][item][{$item.id}][value]" class="table-input" value="{$item.value}">
+                                                <input type="hidden" name="menu[{$parent.id}][item][{$item.id}][id]" class="table-input" value="{$item.id}">
+                                                <input type="hidden" name="menu[{$parent.id}][item][{$item.id}][pid]" class="table-input" value="{$item.pid}">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                    {/volist}
+                                    </tbody>
+                                </table>
+                                <div class="btn-list">
+                                    <button style="border-radius: 3px;" onclick="add_one()" class="btn btn-dark btn-w-md" type="button">添加一级菜单</button>
+                                    <button style="border-radius: 3px;" onclick="submit1()" class="btn btn-theme btn-w-md" type="button">保存</button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+<style>
+    .table-input{
+        max-width: 100%;
+    }
+    .form-inline .table-btn{
+        margin-left: 5px;
+    }
+    .item .form-inline .con{
+        width: 20px;
+    }
+</style>
+<script type="text/javascript">
+    $(function () {
+        $(document).on('click','.parent .add-two',function () {
+            var id=$(this).attr('data-id');
+            var len=$('.item'+id).length;
+            if (len>=5){
+                showErrorMsg("最多可添加五个二级菜单");
+                return;
+            }
+            var html='<tr class="item item'+id+'">' +
+                '<td>' +
+                '<a class="table-btn btn-danger" onclick="shanchu(\'\',2,this)"><i class="mdi mdi-delete"></i>删除</a>' +
+                '</td>' +
+                '<td>' +
+                '<div class="form-inline">' +
+                '<div class="con"></div>' +
+                '<input type="text" name="menu['+id+'][item]['+len+'][name]" class="table-input">' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div>' +
+                '<select class="input-group-select" name="menu['+id+'][item]['+len+'][type]">' +
+                '<option value="view">链接</option>' +
+                '<option value="click">触发关键字</option>' +
+                '<option value="scancode_push">扫码</option>' +
+                '<option value="scancode_waitmsg"> 扫码（等待信息）</option>' +
+                '<option value="pic_sysphoto">系统拍照发图</option>' +
+                '<option value="pic_photo_or_album">拍照或者相册发图</option>' +
+                '<option value="pic_weixin">微信相册发图</option>' +
+                '<option value="location_select">地理位置</option>' +
+                '</select>' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<div>' +
+                '<input type="hidden" name="menu['+id+'][item]['+len+'][pid]" class="table-input" value="'+id+'">' +
+                '<input type="hidden" name="menu['+id+'][item]['+len+'][id]" class="table-input" value="0">' +
+                '<input type="text" name="menu['+id+'][item]['+len+'][value]" class="table-input" value="">' +
+                '</div>' +
+                '</td>' +
+                '</tr>';
+            $(this).parent().parent().parent().after(html);
+        })
+    });
+    function add_one() {
+        var len=$('.parent').length;
+        if (len>=3){
+            showErrorMsg("最多可添加三个一级菜单");
+            return;
+        }
+        var id=$('.parent:last').attr('data-id');
+        if (id==undefined){
+            var s=0;
+        }else {
+            var s=parseInt(id)+1;
+        }
+        var html='<tr class="parent" data-id="'+s+'">' +
+        '<td>' +
+        '<a class="table-btn btn-danger" data-id="'+s+'" onclick="shanchu(\'\',1,this)"><i class="mdi mdi-delete"></i>删除</a>' +
+        '</td>' +
+        '<td>' +
+        '<div class="form-inline">' +
+        '<div class="con"></div>' +
+        '<input type="text" name="menu['+s+'][name]" class="table-input" value="">' +
+        '<a class="table-btn btn-theme add-two" data-id="'+s+'"><i class="mdi mdi-plus-circle"></i>添加</a>' +
+        '</div>' +
+        '</td>' +
+        '<td>' +
+        '<div>' +
+        '<select class="input-group-select" name="menu['+s+'][type]">' +
+        '<option value="view">链接</option>' +
+        '<option value="click">触发关键字</option>' +
+        '<option value="scancode_push">扫码</option>' +
+        '<option value="scancode_waitmsg"> 扫码（等待信息）</option>' +
+        '<option value="pic_sysphoto">系统拍照发图</option>' +
+        '<option value="pic_photo_or_album">拍照或者相册发图</option>' +
+        '<option value="pic_weixin">微信相册发图</option>' +
+        '<option value="location_select">地理位置</option>' +
+        '</select>' +
+        '</div>' +
+        '</td>' +
+        '<td>' +
+        '<div>' +
+        '<input type="hidden" name="menu['+s+'][pid]" value="0" class="table-input">' +
+        '<input type="hidden" name="menu['+s+'][id]" value="0" class="table-input">' +
+        '<input type="text" name="menu['+s+'][value]" class="table-input">' +
+        '</div>' +
+        '</td>' +
+        '</tr>';
+        $('#tbody').append(html);
+    }
+    function shanchu(id,level,obj) {
+        //删除1级菜单
+        if (level===1){
+            //调用删除 要判断是否有子分类 如果有 就不允许删除
+            var id1=$(obj).attr('data-id');
+            var len=$('.item'+id1).length;
+            if (len>0){
+                showErrorMsg('请先删除子菜单');
+                return;
+            }
+            if (id){
+                //调用删除
+                do_shanchu(id,obj);
+            }else {
+                $(obj).parent().parent().remove();
+            }
+        }else {
+            //删除二级菜单
+            if (id){
+                //调用删除
+                do_shanchu(id,obj);
+            }else {
+                $(obj).parent().parent().remove();
+            }
+        }
+    }
+    function do_shanchu(id,obj) {
+        var text = "确认删除?";
+        showConfirm(text, function () {
+            var url = "{:url('Weixin/wx_menu_del')}";
+            var data = {'id': id};
+            public_ajax(url, data, function (res) {
+                if (res.code==1){
+                    showSuccessMsg(res.msg);
+                    $(obj).parent().parent().remove();
+                }else {
+                    showErrorMsg(res.msg);
+                }
+            })
+        })
+    }
+    function submit1() {
+        var len=$('.parent').length;
+        if (len==0){
+            showErrorMsg("请先添加菜单");
+            return;
+        }
+        var isFill = true;
+        $('#tbody tr input').each(function () {
+            if($(this).val() == ""){
+                isFill = false;
+                return false;
+            }
+        });
+        if (!isFill){
+            showErrorMsg("数据填写不完整,请检查!");
+            return;
+        }
+        $('#form').submit();
+    }
+</script>
+</body>
+</html>

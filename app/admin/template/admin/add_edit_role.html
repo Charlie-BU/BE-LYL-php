@@ -1,0 +1,132 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    {include file='public:left-menu'/}
+    <!--End 左侧导航-->
+    <!--头部信息-->
+    {include file='public:nav-header' title="权限管理" subTitle="添加编辑角色"/}
+    <!--End 头部信息-->
+
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+
+      <div class="container-fluid">
+
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <form action="" id="submit-form" method="post">
+                  <div class="form-group">
+                    <label class="form-title"><em class="require">*</em>角色名称</label>
+                    <input type="text" class="form-control" name="role_name" value="{$info.role_name}" placeholder="请输入角色名称"/>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-title">角色描述</label>
+                    <textarea class="form-control" name="role_desc" rows="3"
+                              placeholder="请输入角色描述">{$info.role_desc}</textarea>
+                  </div>
+                  <div class="card-header"><h4>权限分配</h4></div>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                      <tr>
+                        <th>
+                          <label class="lyear-checkbox checkbox-primary">
+                            <input type="checkbox" id="check-all">
+                            <span> 全选</span>
+                          </label>
+                        </th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      {foreach name="$modules" item="module" key="k"}
+                      <tr>
+                        <td class="p-l-20">
+                          <label class="lyear-checkbox checkbox-primary">
+                            <input type="checkbox" {if $module.enable}checked{/if} class="checkbox-parent checkbox-child" dataid="{$k}">
+                            <span> {$group[$k]}</span>
+                          </label>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="p-l-40">
+                          {foreach name="module.child" item="menu" key="key"}
+                          <label class="lyear-checkbox checkbox-primary checkbox-inline">
+                            <input name="right[]" type="checkbox" {if $menu.enable}checked{/if} dataid="{$k}-{$key}" class="checkbox-child" value="{$menu.id}">
+                            <span> {$menu.name}</span>
+                          </label>
+                          {/foreach}
+                        </td>
+                      </tr>
+                      {/foreach}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div>
+                    <input type="hidden" name="{$info.pk}" value="{$info[$info.pk]}">
+                    <button type="button" class="btn-theme submit-btn">确定</button>
+                  </div>
+                </form>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+  <style>
+    .table > tbody > tr > td,.table > thead > tr > th{
+      text-align: left;
+    }
+    .lyear-checkbox span::before{
+      border-radius: 3px;
+    }
+    .checkbox-primary input:checked ~ span::before {
+      background-color: var(--theme);
+      border-color: var(--theme);
+    }
+  </style>
+</div>
+
+<script type="text/javascript">
+  $(function(){
+    $('.submit-btn').click(function () {
+      var url = "{:url('Admin/add_edit_role',[$info.pk=>$info[$info.pk]])}";
+      var data = $('#submit-form').serialize();
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function (data) {
+          if (data.code == 1) {
+            showSuccessMsg(data.msg, function () {
+              if (data.result.url) {
+                location.href = data.result.url;
+              }
+            });
+          }  else {
+            showErrorMsg(data.msg);
+          }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+          showErrorMsg("网络失败，请刷新后重试!");
+        }
+      });
+    });
+    $('input.checkbox-parent').on('change', function(){
+      var dataid = $(this).attr("dataid");
+      $('input[dataid^=' + dataid + '-]').prop('checked', $(this).is(':checked'));
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<aside class="lyear-layout-sidebar">
+    <!-- logo -->
+    <div id="logo" class="sidebar-header">
+        <a href="{:url('Index/index')}"><img src="{$tpshop_config.basic_admin_home_logo}" title="后台首页" /></a>
+    </div>
+    <div class="lyear-layout-sidebar-scroll">
+        <nav class="sidebar-main">
+            <ul class="nav nav-drawer">
+                {volist name="$menuArr" id="menu"}
+                <li class="nav-item {$menu.hasSubnav} {$menu.class}">
+                    <a href="{$menu.url}"><i class="mdi {$menu.icon}"></i>{$menu.name}</a>
+                    {if $menu.child}
+                    <ul class="nav nav-subnav">
+                        {volist name="$menu.child" id="child"}
+                        <li class="{$child.class}"> <a href="{$child.url}">{$child.name}</a> </li>
+                        {/volist}
+                    </ul>
+                    {/if}
+                </li>
+                {/volist}
+            </ul>
+        </nav>
+    </div>
+</aside>

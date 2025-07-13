@@ -1,0 +1,11 @@
+.idea
+/log/*
+runtime
+/public/upload/*
+*.DS_Store
+*log.txt
+*.user.ini
+.env
+.env.backup
+.env.production
+liyilian.sql

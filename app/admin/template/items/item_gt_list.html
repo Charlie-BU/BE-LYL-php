@@ -1,0 +1,151 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        {include file='public:left-menu'/}
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        {include file='public:nav-header' title="项目管理" subTitle="沟通日活"/}
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            {assign name="type" value="$Request.param.type|default=1" /}
+                            <div class="flex">
+                                <ul class="nav nav-tabs page-tabs">
+                                    <li {if $type=='1'}class="active"{/if} onclick="jump('1')"><a href="javascript:;">项目方</a></li>
+                                    <li {if $type=='2'}class="active"{/if} onclick="jump('2')"><a href="javascript:;">人才方</a></li>
+                                </ul>
+                            </div>
+                            <div class="hint">
+                                <div class="hint-info">
+                                    <h5><i class="mdi mdi-help-circle-outline"></i>操作提示</h5>
+                                    <p>平台所有沟通日活列表</p>
+                                </div>
+                            </div>
+                            <div class="card-toolbar">
+                                <div class="toolbar-btn-action">
+                                    <a class="btn btn-label btn-theme" onclick="submit1(2)" href="javascript:;"><label><i
+                                            class="mdi mdi-buffer"></i></label> 导出数据</a>
+                                </div>
+                                <div class="card-toolbar-center">
+                                    <a href="" class="table-btn btn-dark"><i class="mdi mdi-replay"></i></a>
+                                    <button class="table-btn btn-theme">共{$list->total()}条记录
+                                        当前第{$list->currentPage()}页
+                                    </button>
+                                </div>
+                                <form class="table-form" method="post" action="">
+                                    <div class="table-form-group">
+                                        <input type="hidden" name="ids">
+                                        <input type="hidden" name="type" value="{$type}">
+                                        <input type="text" value="{$Request.param.keyword}" name="keyword"
+                                               placeholder="查询会员账号">
+                                        <button class="btn btn-default" onclick="submit1(1)" type="button">搜索</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>手机号码</th>
+                                        <th>主动沟通</th>
+                                        <th>被动沟通</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {if $list->isEmpty()}
+                                    <tr>
+                                        <td class="no-data" colspan="50">
+                                            <i class="mdi mdi-alert-decagram"></i>没有符合条件的记录
+                                        </td>
+                                    </tr>
+                                    {else/}
+                                    {volist name="$list" id="vo"}
+                                    <tr>
+                                        <td><a href="{:url('User/detail',['user_id'=>$vo.user_id])}">{$vo.user.mobile}</a></td>
+                                        <td>{$vo.zd_num}</td>
+                                        <td>{$vo.bd_num}</td>
+                                    </tr>
+                                    {/volist}
+                                    {/if}
+                                    </tbody>
+                                </table>
+                                <!--分页-->
+                                <div class="page">
+                                    {$page|raw}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+<style>
+    .item-row-input{
+        display: flex;
+        align-items: center;
+    }
+    .item-row-input:not(:last-child) {
+        margin-bottom: 10px;
+    }
+    .item-row-input h5{
+        width: 100px;
+    }
+    .item-row-input .form-control{
+        flex: 1;
+    }
+    .flex{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-right: 15px;
+        border-bottom: 1px solid #ebebeb;
+    }
+    .flex .nav-tabs{
+        margin-bottom: 0;
+        border-bottom: none;
+    }
+</style>
+<script src="__STATIC__/plugin/laydate/laydate/laydate.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('#start_time').layDate();
+        $('#end_time').layDate();
+    });
+    function jump(status='') {
+        var url="{:url('Items/item_gt_list')}";
+        if (status) {
+            $('[name=type]').val(status);
+        }
+        $('.table-form').attr('action',url).submit();
+    }
+    function submit1(type) {
+        if (type==1){
+            $('[name=ids]').val('');
+            var url="{:url('Items/item_gt_list')}";
+        }else {
+            var checkbox = $('.checkbox:checked');
+            var ids = [];
+            $.each(checkbox, function (index, item) {
+                ids.push(item.value)
+            });
+            $('[name=ids]').val(ids);
+            var url = "{:url('Items/export_item_gt')}";
+        }
+        $('.table-form').attr('action',url).submit();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    {include file='public:left-menu'/}
+    <!--End 左侧导航-->
+
+    <!--头部信息-->
+    {include file='public:nav-header' title="系统后台" subTitle="首页"/}
+    <!--End 头部信息-->
+
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="card-toolbar" style="padding: 0">
+                  <div class="toolbar-btn-action">
+                    <a class="btn btn-label btn-theme" onclick="submit1(2)" href="javascript:;"><label><i
+                            class="mdi mdi-buffer"></i></label> 导出数据</a>
+                  </div>
+                  <div class="card-toolbar-center">
+                  </div>
+                  <form class="table-form" method="post" action="">
+                    <div class="table-form-group">
+                      <input data-type="time" readonly id="start_time" name="start_time" type="text" value="{$start_time}">
+                      <button class="btn btn-default" type="button">开始时间</button>
+                    </div>
+                    <div class="table-form-group">
+                      <input data-type="time" name="end_time" id="end_time" type="text" value="{$end_time}" readonly>
+                      <button class="btn btn-default" type="button">结束时间</button>
+                    </div>
+                    <div class="table-form-group" style="border-left-width: 0">
+                      <button class="btn btn-default" onclick="submit1(1)" type="button">搜索</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6 col-lg-3">
+            <div class="card bg-purple">
+              <a href="{:url('Items/tag_list')}" class="link">
+                <div class="card-body clearfix">
+                  <div class="pull-right">
+                    <p class="h6 text-white m-t-0">标签数量</p>
+                    <p class="h3 text-white m-b-0">{$count.tags}</p>
+                  </div>
+                  <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-buffer fa-1-5x"></i></span> </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card bg-purple">
+              <a href="{:url('Items/resume_list',['status'=>-1])}" class="link">
+                <div class="card-body clearfix">
+                  <div class="pull-right">
+                    <p class="h6 text-white m-t-0">待审核简历数</p>
+                    <p class="h3 text-white m-b-0">{$count.check_resume}</p>
+                  </div>
+                  <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-buffer fa-1-5x"></i></span> </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card bg-purple">
+              <a href="{:url('Items/resume_list')}" class="link">
+                <div class="card-body clearfix">
+                  <div class="pull-right">
+                    <p class="h6 text-white m-t-0">简历总数</p>
+                    <p class="h3 text-white m-b-0">{$count.resume}</p>
+                  </div>
+                  <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-buffer fa-1-5x"></i></span> </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card bg-purple">
+              <a href="{:url('Items/item_list',['status'=>-1])}" class="link">
+                <div class="card-body clearfix">
+                  <div class="pull-right">
+                    <p class="h6 text-white m-t-0">待审核项目数</p>
+                    <p class="h3 text-white m-b-0">{$count.check_items}</p>
+                  </div>
+                  <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-buffer fa-1-5x"></i></span> </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card bg-purple">
+              <a href="{:url('Items/item_list')}" class="link">
+                <div class="card-body clearfix">
+                  <div class="pull-right">
+                    <p class="h6 text-white m-t-0">项目数量</p>
+                    <p class="h3 text-white m-b-0">{$count.items}</p>
+                  </div>
+                  <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-buffer fa-1-5x"></i></span> </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card bg-info">
+              <a href="{:url('Content/ad_list')}" class="link">
+                <div class="card-body clearfix">
+                  <div class="pull-right">
+                    <p class="h6 text-white m-t-0">广告数量</p>
+                    <p class="h3 text-white m-b-0">{$count.ad}</p>
+                  </div>
+                  <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-image fa-1-5x"></i></span> </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card bg-info">
+              <a href="{:url('Content/protocol_list')}" class="link">
+                <div class="card-body clearfix">
+                  <div class="pull-right">
+                    <p class="h6 text-white m-t-0">协议数量</p>
+                    <p class="h3 text-white m-b-0">{$count.protocol}</p>
+                  </div>
+                  <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-file-document fa-1-5x"></i></span> </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card bg-danger">
+              <a href="{:url('User/index')}" class="link">
+                <div class="card-body clearfix">
+                  <div class="pull-right">
+                    <p class="h6 text-white m-t-0">用户总数</p>
+                    <p class="h3 text-white m-b-0">{$count.users}</p>
+                  </div>
+                  <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account fa-1-5x"></i></span> </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card bg-danger">
+              <a href="{:url('User/index',['is_kf'=>1])}" class="link">
+                <div class="card-body clearfix">
+                  <div class="pull-right">
+                    <p class="h6 text-white m-t-0">客服总数</p>
+                    <p class="h3 text-white m-b-0">{$count.kf_num}</p>
+                  </div>
+                  <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account fa-1-5x"></i></span> </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card bg-danger">
+              <a href="{:url('User/index',['is_lock'=>1])}" class="link">
+                <div class="card-body clearfix">
+                  <div class="pull-right">
+                    <p class="h6 text-white m-t-0">冻结用户总数</p>
+                    <p class="h3 text-white m-b-0">{$count.is_lock}</p>
+                  </div>
+                  <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account fa-1-5x"></i></span> </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card bg-danger">
+              <a href="{:url('User/index',['today_login'=>1])}" class="link">
+                <div class="card-body clearfix">
+                  <div class="pull-right">
+                    <p class="h6 text-white m-t-0">今日访问用户</p>
+                    <p class="h3 text-white m-b-0">{$count.today_login}</p>
+                  </div>
+                  <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account fa-1-5x"></i></span> </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card bg-danger">
+              <a href="{:url('User/index',['today_reg'=>1])}" class="link">
+                <div class="card-body clearfix">
+                  <div class="pull-right">
+                    <p class="h6 text-white m-t-0">今日注册用户</p>
+                    <p class="h3 text-white m-b-0">{$count.new_users}</p>
+                  </div>
+                  <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account fa-1-5x"></i></span> </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                <h4>本月用户</h4>
+              </div>
+              <div class="card-body">
+                <div id="main" class="js-chartjs-bars"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+  <style>
+    .link{
+      color: #fff;
+    }
+    .link:hover{
+      color: #fff;
+    }
+    .card{
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .js-chartjs-bars{
+      width: 100%;
+      height: 400px;
+    }
+  </style>
+</div>
+<script src="__STATIC__/plugin/laydate/laydate/laydate.js"></script>
+<!--图表插件-->
+<script type="text/javascript" src="__STATIC__/js/echarts.min.js"></script>
+<script type="text/javascript">
+  var res = {$result|raw};
+  $(document).ready(function(e) {
+    $('#start_time').layDate();
+    $('#end_time').layDate();
+    var chartDom = document.getElementById('main');
+    var myChart = echarts.init(chartDom);
+
+    var option = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross',
+          crossStyle: {
+            color: 'rgba(0,122,255,0.5)'
+          }
+        }
+      },
+      xAxis: {
+        type: 'category',
+        data: res.time || [],
+        axisPointer: {
+          type: 'shadow',
+          shadowStyle:{
+            color:"rgba(0,122,255,0.1)"
+          }
+        },
+        axisLine:{
+          show:true,
+          lineStyle:{
+            color:"rgba(0,122,255,0.8)"
+          }
+        }
+      },
+      textStyle:{
+        color:"#8b95a5"
+      },
+      grid: {
+        left: '3%',
+        right: '3%',
+        bottom: '3%',
+        containLabel: true,
+      },
+      color:"rgba(0,122,255,0.8)",
+      yAxis: {
+        type: 'value',
+        splitLine:{
+          show:true,
+          lineStyle:{
+            color:"rgba(0,122,255,0.1)"
+          }
+        },
+        axisLine:{
+          show:true,
+          lineStyle:{
+            color:"rgba(0,122,255,0.8)"
+          }
+        },
+      },
+      series: [{
+        name: '注册用户',
+        data: res.data || [],
+        barWidth:30,
+        type: 'bar'
+      }]
+    };
+    option && myChart.setOption(option);
+  });
+  function submit1(type) {
+    if (type==1){
+      var url="{:url('Index/index')}";
+    }else {
+      var url = "{:url('Index/export_index')}";
+    }
+    $('.table-form').attr('action',url).submit();
+  }
+</script>
+</body>
+</html>

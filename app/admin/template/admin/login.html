@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--favicon-->
+    <link rel="shortcut icon" type="image/x-icon" href="{$tpshop_config.basic_store_ico|default='__STATIC__/images/storeico.png'}" media="screen"/>
+    <!-- Bootstrap CSS -->
+    <link href="__ADMIN__/login/css/bootstrap.min.css" rel="stylesheet">
+    <link href="__ADMIN__/login/css/app.css" rel="stylesheet">
+    <title>管理员登录</title>
+</head>
+<body class="bg-forgot">
+<!-- wrapper -->
+<div class="wrapper" id="app">
+    <div class="authentication-forgot d-flex align-items-center justify-content-center">
+        <div class="card login-box">
+            <div class="card-body">
+                <div class="p-4 rounded  border">
+                    <div class="text-center">
+                        <img src="__ADMIN__/login/img/idea.png" width="120" alt="" />
+                    </div>
+                    <h4 class="mt-5 font-weight-bold">管理员登录</h4>
+                    <p class="text-muted">输入您的账号、密码</p>
+                    <div class="my-4">
+                        <label class="form-label">用户名</label>
+                        <input type="text" v-model="username" class="form-control" placeholder="请输入您的用户名" />
+                    </div>
+                    <div class="my-4">
+                        <label class="form-label">密码</label>
+                        <input type="password" v-model="password" class="form-control" placeholder="请输入您的密码" />
+                    </div>
+                    <div class="remember">
+                        <input type="checkbox" :checked="rememberMe==1" @change="remember" class="checkbox" id="checkbox">
+                        <label for="checkbox">记住我</label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-primary login-btn" @click="login">登录</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end wrapper -->
+</body>
+<script src="__STATIC__/js/jquery.js"></script>
+<script src="__STATIC__/js/vue.js"></script>
+<link rel="stylesheet" type="text/css" href="__ADMIN__/plugin/TGTool/TGTool.css" />
+<script src="__ADMIN__/plugin/TGTool/TGTool.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            username:localStorage.getItem('username')||'',
+            password:localStorage.getItem('password')||'',
+            rememberMe:localStorage.getItem('rememberMe') || 1
+        },
+        created() {},
+        methods: {
+            remember(e){
+                this.rememberMe = e.target.checked ? 1 : 0;
+            },
+            login(){
+                if (this.username == '') {
+                    showErrorMsg("用户名不能为空");
+                    return;
+                }
+                if (this.password == '') {
+                    showErrorMsg("密码不能为空");
+                    return;
+                }
+                var _this=this
+                $.ajax({
+                    url: "{:url('Admin/login')}",
+                    data: {'username': _this.username, 'password': _this.password,'rememberMe':_this.rememberMe},
+                    type: 'post',
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result.code == 1) {
+                            localStorage.setItem("rememberMe",_this.rememberMe)
+                            if (_this.rememberMe){
+                                localStorage.setItem("username",_this.username)
+                                localStorage.setItem("password",_this.password)
+                            }else {
+                                localStorage.removeItem("username")
+                                localStorage.removeItem("password")
+                            }
+                            showSuccessMsg(result.msg,function () {
+                                location.href=result.result.url;
+                            })
+                        } else {
+                            showErrorMsg(result.msg);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        showErrorMsg("网络失败，请刷新页面后重试!");
+                    }
+                });
+            }
+        }
+    });
+    function showErrorMsg(msg,callback=function () {}) {
+        var tg = TGTool();
+        tg.error(msg,callback);
+    }
+    function showSuccessMsg(msg,callback=function () {}) {
+        var tg = TGTool();
+        tg.success(msg,callback);
+    }
+</script>
+</html>

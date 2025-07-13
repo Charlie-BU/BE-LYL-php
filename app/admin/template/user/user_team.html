@@ -1,0 +1,147 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    {include file='public:left-menu'/}
+    <!--End 左侧导航-->
+    <!--头部信息-->
+    {include file='public:nav-header' title="会员管理" subTitle="$text"/}
+    <!--End 头部信息-->
+
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-toolbar">
+                <div class="card-toolbar-center">
+                  <a href="" class="table-btn btn-dark"><i class="mdi mdi-replay"></i></a>
+                  <button class="table-btn btn-theme">共{$list->total()}条记录 当前第{$list->currentPage()}页</button>
+                </div>
+                <form class="table-form" method="post" action="">
+                  <div class="table-form-group">
+                    <select name="is_lock" class="input-group-select">
+                      <option value="">是否启用</option>
+                      <option value="0" {if $Request.param.is_lock=='0'}selected{/if}>是</option>
+                      <option value="1" {if $Request.param.is_lock=='1'}selected{/if}>否</option>
+                    </select>
+                    <select name="level" class="input-group-select">
+                      <option value="">会员等级</option>
+                      {volist name="$levelList" id="level"}
+                      <option value="{$level.level_id}" {if $Request.param.level==$level.level_id}selected{/if}>{$level.name}</option>
+                      {/volist}
+                    </select>
+                    {assign name="search_type" value="$Request.param.search_type|default='mobile'" /}
+                    <select name="search_type" class="input-group-select">
+                      <option value="mobile" {if $search_type=='mobile'}selected{/if}>手机号码</option>
+                      <option value="realname" {if $search_type=='realname'}selected{/if}>真实姓名</option>
+                    </select>
+                    <input type="text" value="{$Request.param.search_key}" name="search_key"
+                           placeholder="查询">
+                    <button class="btn btn-default" type="submit">搜索</button>
+                  </div>
+                </form>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                    <tr>
+                      <th style="width: 280px">操作</th>
+                      <th>ID</th>
+                      <th>真实姓名</th>
+                      <th>层级</th>
+                      <th>手机号码</th>
+                      <th>推荐人</th>
+                      <th>会员等级</th>
+                      {volist name="$user_account" id="vo"}
+                      <th>{$vo.name}</th>
+                      {/volist}
+                      <th>启用</th>
+                      <th>注册日期</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {if $list->isEmpty()}
+                    <tr>
+                      <td class="no-data" colspan="50">
+                        <i class="mdi mdi-alert-decagram"></i>没有符合条件的记录
+                      </td>
+                    </tr>
+                    {else/}
+                    {volist name="$list" id="vo"}
+                    <tr>
+                      <td>
+                        <a class="table-btn btn-success" href="{:url('User/user_team',['user_id'=>$vo[$vo.pk]])}"><i class="mdi mdi-account-multiple"></i>团队</a>
+                        <a class="table-btn btn-theme" href="{:url('User/detail',['user_id'=>$vo[$vo.pk]])}"><i class="mdi mdi-pencil"></i>详情</a>
+                        <a class="table-btn btn-info" href="{:url('User/account_log',['user_id'=>$vo[$vo.pk]])}"><i class="mdi mdi-wallet"></i>资金</a>
+                        <a class="table-btn btn-dark" href="{:url('User/address',['user_id'=>$vo[$vo.pk]])}"><i class="mdi mdi-map-marker"></i>地址</a>
+                      </td>
+                      <td>{$vo.user_id}</td>
+                      <td>{$vo.realname|default='无'}</td>
+                      <td>{$vo.cengji}层</td>
+                      <td><a href="{:url('User/detail',['user_id'=>$vo.user_id])}">{$vo.mobile}</a></td>
+                      <td>
+                        {if $vo.reid}
+                        <a href="{:url('User/detail',['user_id'=>$vo.reid])}">{$vo.reid|getMobile}</a>
+                        {else/}
+                        无
+                        {/if}
+                      </td>
+                      <td>{$vo.user_level.name}</td>
+                      {volist name="$user_account" id="account"}
+                      <td><a href="{:url('User/account_edit',['user_id'=>$vo[$vo.pk]])}">{$vo[$key]}</a></td>
+                      {/volist}
+                      <td><span data-id="{$vo[$vo.pk]}" class="lock mdi {$vo.is_lock==0 ? 'text-success mdi-checkbox-marked-circle-outline' : 'text-red mdi-close-circle-outline'}"> {$vo.status_text}</span></td>
+                      <td>{$vo.reg_time}</td>
+                    </tr>
+                    {/volist}
+                    {/if}
+                    </tbody>
+                  </table>
+                </div>
+                <!--分页-->
+                <div class="page">
+                  {$page|raw}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(function(){
+      $('.lock').on('click',function () {
+        if ($(this).hasClass('text-success')){
+          var is_lock=1;
+          var remove='text-success mdi-checkbox-marked-circle-outline';
+          var add='text-red mdi-close-circle-outline';
+          var text=' 禁用';
+        }else {
+          var is_lock=0;
+          var remove='text-red mdi-close-circle-outline';
+          var add='text-success mdi-checkbox-marked-circle-outline';
+          var text=' 正常';
+        }
+        var id=$(this).attr('data-id');
+        var obj=$(this);
+        changeTableVal('users','is_lock',id,is_lock,function (res) {
+          if(res.code==1){
+            obj.removeClass(remove).addClass(add).text(text);
+          }
+        });
+      });
+  });
+</script>
+</body>
+</html>

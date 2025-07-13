@@ -1,0 +1,256 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        {include file='public:left-menu'/}
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        {include file='public:nav-header' title="项目管理" subTitle="编辑项目"/}
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content" id="app">
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form method="post" id="submit-form" class="row">
+                                    <div class="form-group col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="form-title"><em class="require">*</em>手机号码</label>
+                                                <input type="text" value="{$info.user.mobile}" class="form-control" readonly placeholder="请输入手机号码"/>
+                                                <span class="error" id="err_mobile"></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-title"><em class="require">*</em>项目标题</label>
+                                                <input type="text" value="{$info.title}" name="title" class="form-control" placeholder="请输入项目标题"/>
+                                                <span class="error" id="err_title"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="form-title"><em class="require">*</em>项目标签</label>
+                                                <select class="form-control" id="tags" name="tags[]" multiple>
+                                                    {volist name="$tags" id="vo"}
+                                                    <option value="{$vo.id}" {if in_array($vo.id,$info.tags_arr)}selected{/if}>{$vo.name}</option>
+                                                    {/volist}
+                                                </select>
+                                                <span class="error" id="err_tags"></span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-title"><em class="require">*</em>工作属性</label>
+                                                <select class="form-control" id="property" name="property[]" multiple>
+                                                    {volist name="$property" id="vo"}
+                                                    <option value="{$vo.id}" {if in_array($vo.id,$info.property_arr)}selected{/if}>{$vo.name}</option>
+                                                    {/volist}
+                                                </select>
+                                                <span class="error" id="err_property"></span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-title"><em class="require">*</em>期望城市</label>
+                                                <select class="form-control" id="citys" name="citys[]" multiple>
+                                                    {volist name="$citys" id="city"}
+                                                    <option value="{$city.id}" {if in_array($city.id,$info.citys_arr)}selected{/if}>{$city.name}</option>
+                                                    {/volist}
+                                                </select>
+                                                <span class="error" id="err_citys"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="form-title"><em class="require">*</em>招聘岗位</label>
+                                                <select class="form-control" id="post" name="post[]" multiple>
+                                                    {volist name="$post" id="post"}
+                                                    <option value="{$post.id}" {if in_array($post.id,$info.post_arr)}selected{/if}>{$post.name}</option>
+                                                    {/volist}
+                                                </select>
+                                                <span class="error" id="err_post"></span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-title"><em class="require">*</em>需求技能</label>
+                                                <select class="form-control" id="talents" name="talents[]" multiple>
+                                                    {volist name="$talents" id="talent"}
+                                                    <option value="{$talent.id}" {if in_array($talent.id,$info.talents_arr)}selected{/if}>{$talent.name}</option>
+                                                    {/volist}
+                                                </select>
+                                                <span class="error" id="err_talents"></span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-title"><em class="require">*</em>合作时间</label>
+                                                <div class="form-inline">
+                                                    <input type="text" id="hz_start_time" name="hz_start_time" value="{$info.hz_start_time}" class="form-control" readonly placeholder="请选择开始时间"/>
+                                                    <div class="center-text">--</div>
+                                                    <input type="text" id="hz_end_time" name="hz_end_time" value="{$info.hz_end_time}" class="form-control" readonly placeholder="请选择开始时间"/>
+                                                </div>
+                                                <span class="error" id="err_hz_start_time"></span>
+                                                <span class="error" id="err_hz_end_time"></span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-title"><em class="require">*</em>薪资</label>
+                                                <div class="form-inline">
+                                                    <input type="text" value="{$info.salary}" name="salary" class="form-control" placeholder="请输入薪资"/>
+                                                    <select class="input-group-select" style="margin-left: -1px;height: 38px" name="salary_unit" v-model="salary_unit">
+                                                        <option value="元/天">元/天</option>
+                                                        <option value="元/月">元/月</option>
+                                                        <option value="项目总额">项目总额</option>
+                                                    </select>
+                                                </div>
+                                                <span class="error" id="err_salary"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label class="form-title">项目需求</label>
+                                                <textarea class="form-control" name="strength" rows="8" placeholder="请输入项目需求">{$info.strength}</textarea>
+                                                <span class="error" id="err_strength"></span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-title">岗位职责</label>
+                                                <textarea class="form-control" name="experience" rows="8" placeholder="请输入岗位职责">{$info.experience}</textarea>
+                                                <span class="error" id="err_experience"></span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-title">备注信息</label>
+                                                <textarea class="form-control" name="remark" rows="8" placeholder="请输入备注信息">{$info.remark}</textarea>
+                                                <span class="error" id="err_remark"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="form-title">刷新时间</label>
+                                                <div class="form-control-static">{$info.refresh_time_text}</div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-title">审核通过时间</label>
+                                                <div class="form-control-static">{$info.check_time_text}</div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-title">驳回时间</label>
+                                                <div class="form-control-static">{$info.refuse_time_text}</div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-title">拒绝原因</label>
+                                                <div class="form-control-static">{$info.reason|default='---'}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn-theme submit-btn">确定</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+<style>
+    .form-inline .item{
+        margin-right: 5px;
+    }
+    .form-inline .item span:last-child{
+        color: var(--red);
+    }
+    .form-inline .form-control{
+        width: 140px;
+    }
+    .form-inline .center-text{
+        margin: 0 5px;
+    }
+</style>
+<script src="__STATIC__/plugin/laydate/laydate/laydate.js"></script>
+<link rel="stylesheet" href="__STATIC__/plugin/select2/select2.css">
+<script src="__STATIC__/plugin/select2/select2.js"></script>
+<script type="text/javascript" src="__STATIC__/plugin/select2/i18n/zh-CN.js"></script>
+<script type="text/javascript">
+    var _this;
+    var app = new Vue({
+        el: '#app',
+        data: {
+            salary_unit: '{$info.salary_unit}'|| '',
+        },
+        created() {
+            _this=this
+        },
+        methods: {
+        },
+        mounted(){}
+    });
+    $(function () {
+        $('#tags').select2(
+            {
+                placeholder: '请选择项目标签',
+                maximumSelectionLength:3,
+                language:'zh-CN',
+            }
+        );
+        $('#property').select2(
+            {
+                placeholder: '请选择工作属性',
+                maximumSelectionLength:3,
+                language:'zh-CN',
+            }
+        );
+        $('#citys').select2(
+            {
+                placeholder: '请选择期望城市',
+                maximumSelectionLength:3,
+                language:'zh-CN'
+            }
+        );
+        $('#post').select2(
+            {
+                placeholder: '请选择需求技能',
+                maximumSelectionLength:3,
+                language:'zh-CN'
+            }
+        );
+        $('#talents').select2(
+            {
+                placeholder: '请选择项目类型',
+                maximumSelectionLength:3,
+                language:'zh-CN'
+            }
+        );
+        $('#hz_start_time').layDate();
+        $('#hz_end_time').layDate();
+        $('.submit-btn').click(function () {
+            var url = "{:url('Items/edit_item',[$info.pk=>$info[$info.pk]])}";
+            var data = $('#submit-form').serialize();
+            public_ajax(url,data,function (data) {
+                if (data.code == 1) {
+                    showSuccessMsg(data.msg, function () {
+                        if (data.result.url) {
+                            location.href = data.result.url;
+                        }
+                    });
+                } else if (data.code == 10) {
+                    showErrorMsg(data.msg);
+                    $.each(data.result, function(index, item) {
+                        $('#err_' + index).text(item).show();
+                        $('#err_' + index).parent().addClass('has-error');
+                    });
+                }else {
+                    showErrorMsg(data.msg);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

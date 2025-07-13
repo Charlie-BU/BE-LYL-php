@@ -1,0 +1,95 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    {include file='public:left-menu'/}
+    <!--End 左侧导航-->
+    <!--头部信息-->
+    {include file='public:nav-header' title="数据管理" subTitle="会员排行"/}
+    <!--End 头部信息-->
+
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-toolbar">
+                <div class="card-toolbar-center">
+                  <a href="" class="table-btn btn-dark"><i class="mdi mdi-replay"></i></a>
+                  <button class="table-btn btn-theme">共{$list->total()}条记录 当前第{$list->currentPage()}页</button>
+                </div>
+                <form class="table-form" method="post" action="">
+                  <div class="table-form-group">
+                    <input data-type="time" readonly id="start_time" name="start_time" type="text" value="{$start_time}">
+                    <button class="btn btn-default" type="button">开始时间</button>
+                  </div>
+                  <div class="table-form-group">
+                    <input data-type="time" name="end_time" id="end_time" type="text" value="{$end_time}" readonly>
+                    <button class="btn btn-default" type="button">结束时间</button>
+                  </div>
+                  <div class="table-form-group">
+                    <button style="margin-left: -1px" class="btn btn-default" type="submit">搜索</button>
+                  </div>
+                </form>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                    <tr>
+                      <th>操作</th>
+                      <th>排行</th>
+                      <th>会员姓名</th>
+                      <th>会员手机</th>
+                      <th>订单数量</th>
+                      <th>购物金额</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {if $list->isEmpty()}
+                    <tr>
+                      <td class="no-data" colspan="50">
+                        <i class="mdi mdi-alert-decagram"></i>没有符合条件的记录
+                      </td>
+                    </tr>
+                    {else/}
+                    {volist name="$list" id="vo"}
+                    <tr>
+                      <td style="width: 130px">
+                        <a class="table-btn btn-theme" href="{:url('Report/user_order',['user_id'=>$vo.user.user_id])}"><i class="mdi mdi-magnify"></i>查看明细</a>
+                      </td>
+                      <td>{$key+1+(($p-1)*$page_size)}</td>
+                      <td>{$vo.user.realname|default='无'}</td>
+                      <td><a href="{:url('User/detail',['user_id'=>$vo.user.user_id])}">{$vo.user.mobile}</a></td>
+                      <td>{$vo.order_num}</td>
+                      <td>{$vo.order_amount}</td>
+                    </tr>
+                    {/volist}
+                    {/if}
+                    </tbody>
+                  </table>
+                </div>
+                <!--分页-->
+                <div class="page">
+                  {$page|raw}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+</div>
+<script src="__STATIC__/plugin/laydate/laydate/laydate.js"></script>
+<script type="text/javascript">
+  $(function(){
+    $('#start_time').layDate();
+    $('#end_time').layDate();
+  });
+</script>
+</body>
+</html>

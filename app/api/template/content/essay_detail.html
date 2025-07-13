@@ -1,0 +1,75 @@
+<!--头部css位置s-->
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>内容详情</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{$store_ico|default='__STATIC__/images/storeico.png'}" media="screen"/>
+</head>
+<!--头部css位置e-->
+<body class="bg-fff">
+<!--内容区s-->
+<div id="notice">
+    <div class="title">
+        <div class="left">{$art.title}</div>
+        <div class="right">{:date('Y/m/d',$art.update_time)}</div>
+    </div>
+    <div class="content">
+        <div class="notice-content">
+            {if $art.video}
+            <video src="{$art.video}" controls></video>
+            {/if}
+            {$art.content|raw}
+        </div>
+    </div>
+</div>
+<!--内容区e-->
+</body>
+<style>
+    html{
+        height: calc(100%);
+    }
+    body{
+        height: 100%;
+        padding-top: 10px;
+        box-sizing: border-box;
+    }
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    #notice{
+        background: #fff;
+        border-radius: 10px;
+        margin: 0 15px 0 15px;
+        padding-bottom: 10px;
+    }
+    .title{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+    }
+    .title .left{
+        font-size: 16px;
+        font-weight: bold;
+        color: #353535;
+    }
+    .title .right{
+        font-size: 14px;
+        color: #353535;
+    }
+    .notice-content{
+        color: #353535;
+        font-size: 14px;
+        padding: 10px;
+    }
+    .notice-content video{
+        width: 100%;
+    }
+    img{
+        max-width: 100%;
+    }
+</style>
+</html>

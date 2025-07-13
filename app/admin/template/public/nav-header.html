@@ -1,0 +1,30 @@
+<header class="lyear-layout-header">
+    <nav class="navbar navbar-default">
+        <div class="topbar">
+
+            <div class="topbar-left">
+                <div class="lyear-aside-toggler">
+                    <span class="lyear-toggler-bar"></span>
+                    <span class="lyear-toggler-bar"></span>
+                    <span class="lyear-toggler-bar"></span>
+                </div>
+                <span class="navbar-page-title">[title] - [subTitle]</span>
+            </div>
+            <ul class="topbar-right">
+                <li class="dropdown dropdown-profile">
+                    <a href="javascript:void(0)" data-toggle="dropdown">
+                        <span>{$admin_info.user_name}<span class="caret"></span></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li> <a style="padding-left: 5px;font-size: 13px;">最后登录:{:date('Y-m-d H:i:s',session('last_login_time'))}</a> </li>
+                        <li class="divider"></li>
+                        <li> <a href="{:url('Admin/add_edit_admin',['admin_id'=>session('admin_id')])}"><i class="mdi mdi-account"></i> 个人信息</a> </li>
+                        <li> <a href="{:url('System/cleanCache')}"><i class="mdi mdi-delete"></i> 清空缓存</a></li>
+                        <li class="divider"></li>
+                        <li> <a href="{:url('admin/logout')}"><i class="mdi mdi-logout-variant"></i> 退出登录</a> </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>

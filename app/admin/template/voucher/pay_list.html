@@ -1,0 +1,279 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        {include file='public:left-menu'/}
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        {include file='public:nav-header' title="项目管理" subTitle="合约付款列表"/}
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="hint">
+                                <div class="hint-info">
+                                    <h5><i class="mdi mdi-help-circle-outline"></i>操作提示</h5>
+                                    <p>平台所有合约付款列表</p>
+                                </div>
+                            </div>
+                            <div class="card-toolbar">
+                                <div class="toolbar-btn-action">
+<!--                                    <a class="btn btn-label btn-theme" href="{:url('Voucher/add_edit_pay')}"><label><i-->
+<!--                                            class="mdi mdi-plus-circle"></i></label> 添加付款</a>-->
+                                    <a class="btn btn-label btn-danger" onclick="handel()"><label><i
+                                            class="mdi mdi-delete"></i></label> 批量删除</a>
+                                </div>
+                                <div class="card-toolbar-center">
+                                    <a href="" class="table-btn btn-dark"><i class="mdi mdi-replay"></i></a>
+                                    <button class="table-btn btn-theme">共{$list->total()}条记录
+                                        当前第{$list->currentPage()}页
+                                    </button>
+                                </div>
+                                <form class="table-form" method="post" action="">
+                                    <div class="table-form-group">
+                                        <input data-type="time" readonly id="start_time" name="start_time" type="text" value="{$start_time}">
+                                        <button class="btn btn-default" type="button">开始时间</button>
+                                    </div>
+                                    <div class="table-form-group">
+                                        <input data-type="time" name="end_time" id="end_time" type="text" value="{$end_time}" readonly>
+                                        <button class="btn btn-default" type="button">结束时间</button>
+                                    </div>
+                                    <div class="table-form-group">
+                                        <input type="hidden" name="ids">
+                                        <input type="hidden" name="id" value="{$id}">
+<!--                                        <input type="text" value="{$Request.param.keyword}" name="keyword"-->
+<!--                                               placeholder="付款id|合约id">-->
+                                        <select name="contract_id" class="input-group-select">
+                                            <option value="">所属合约</option>
+                                            {volist name="$contractList" id="contract"}
+                                            <option value="{$contract.id}" {if $Request.param.contract_id==$contract.id}selected{/if}>{$contract.order_sn}--{$contract.name}</option>
+                                            {/volist}
+                                        </select>
+                                        <button class="btn btn-default" onclick="submit1(1)" type="button">搜索</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>
+                                            <label class="table-checkbox">
+                                                <input type="checkbox" id="check-all"><span></span>
+                                            </label>
+                                        </th>
+                                        <th style="width: 100px">操作</th>
+                                        <th>编号</th>
+                                        <th>打款金额</th>
+                                        <th>附件</th>
+                                        <th>所属合约</th>
+                                        <th>打款用户</th>
+                                        <th>收款用户</th>
+                                        <th>创建时间</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {if $list->isEmpty()}
+                                    <tr>
+                                        <td class="no-data" colspan="50">
+                                            <i class="mdi mdi-alert-decagram"></i>没有符合条件的记录
+                                        </td>
+                                    </tr>
+                                    {else/}
+                                    {volist name="$list" id="vo"}
+                                    <tr>
+                                        <td>
+                                            <label class="table-checkbox">
+                                                <input type="checkbox" class="checkbox"
+                                                       value="{$vo[$vo.pk]}"><span></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <a class="table-btn btn-theme" href="{:url('Voucher/add_edit_pay',['id'=>$vo[$vo.pk]])}">
+                                                编辑</a>
+
+
+                                        </td>
+                                        <td>{$vo.id}</td>
+                                        <td>{$vo.money}</td>
+
+                                        <td class="img">
+                                            <img title="点击图片看大图" data-toggle="tooltip" class="table-img" src="{$vo.img}" style="margin:2px 0">
+
+                                        </td>
+                                        <td>{$vo.contract.order_sn}-{$vo.contract.name}</td>
+                                        <td>
+                                            {if $vo.user_id==-1}
+                                            {$dk_name}
+                                            {else/}
+                                            <a href="{:url('User/detail',['user_id'=>$vo.user.user_id])}">{$vo.user_id}--{$vo.user.mobile}</a>
+
+                                            {/if}
+
+                                        </td>
+                                        <td>
+                                            {if $vo.touser_id==-1}
+                                            {$dk_name}
+                                            {else/}
+                                            <a href="{:url('User/detail',['user_id'=>$vo.users.user_id])}">{$vo.touser_id}--{$vo.users.mobile}</a>
+                                            {/if}
+
+                                        </td>
+                                        <td>{$vo.add_time_text}</td>
+                                    </tr>
+                                    {/volist}
+                                    {/if}
+                                    </tbody>
+                                </table>
+                                <!--分页-->
+                                <div class="page">
+                                    {$page|raw}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+<style>
+    .item-row-input{
+        display: flex;
+        align-items: center;
+    }
+    .item-row-input:not(:last-child) {
+        margin-bottom: 10px;
+    }
+    .item-row-input h5{
+        width: 100px;
+    }
+    .item-row-input .form-control{
+        flex: 1;
+    }
+    .flex{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-right: 15px;
+        border-bottom: 1px solid #ebebeb;
+    }
+    .flex .nav-tabs{
+        margin-bottom: 0;
+        border-bottom: none;
+    }
+</style>
+<script src="__STATIC__/plugin/laydate/laydate/laydate.js"></script>
+<script type="text/javascript">
+    layer.photos({
+        photos: '.img'
+        ,anim: 5
+    });
+    $(function () {
+        $('#start_time').layDate();
+        $('#end_time').layDate();
+    });
+    function jump(status='') {
+        var url="{:url('Voucher/voucher_list')}";
+        if (status) {
+            $('[name=status]').val(status);
+        }
+        $('.table-form').attr('action',url).submit();
+    }
+    function showConfirm1(){
+        var checkbox = $('.checkbox:checked');
+        if (checkbox.length == 0) {
+            showErrorMsg("请选择数据");
+            return
+        }
+        var html = '<div class="item-row-input"><h5>拒绝原因</h5><input type="text" class="form-control" name="reason" placeholder="请输入拒绝原因"></div>';
+        var jc = $.confirm({
+            // boxWidth:'50%',
+            // useBootstrap: false,
+            columnClass: 'large',
+            title: '填写拒绝原因',
+            content: '' +
+                '<form action="" class="formName">' +
+                '<div class="form-group">' + html +'</div>' +
+                '</form>',
+            buttons: {
+                quxiao:{
+                    btnClass: 'btn-default',
+                    text: '取消',
+                    action(){
+                        return true;
+                    }
+                },
+                delete: {
+                    btnClass: 'btn-theme',
+                    text: '确定',
+                    action(){
+                        let content = jc.$content
+                        let reason = $(content).find("[name='reason']").val()
+                        if (reason == '') {
+                            showErrorMsg("请输入拒绝原因");
+                            return false;
+                        }
+                        handel(2,reason)
+                        return false;
+                    }
+                }
+            }
+        });
+    }
+    function handel() {
+        var checkbox = $('.checkbox:checked');
+        if (checkbox.length == 0) {
+            showErrorMsg("请选择数据");
+            return
+        }
+        var ids = [];
+        $.each(checkbox, function (index, item) {
+            ids.push(item.value)
+        });
+        var text = "确认操作?";
+        showConfirm(text, function () {
+            var url = "{:url('Index/public_delete')}";
+            var data = {'ids': ids,'table':'pay'};
+            public_ajax(url, data, function (res) {
+                if (res.code==1){
+                    showSuccessMsg(res.msg,function () {
+                        location.reload()
+                    })
+                }else {
+                    showErrorMsg(res.msg);
+                }
+            })
+        })
+    }
+    function submit1(type) {
+        $('[name=ids]').val('');
+        var url="{:url('Voucher/pay_list')}";
+        $('.table-form').attr('action',url).submit();
+    }
+    function voucher_paylist(id) {
+        var url = "{:url('voucher/pay_list')}";
+        if(id){
+            url += '?id='+id;
+        }
+        layer.open({
+            type: 2,
+            title: '付款列表',
+            shadeClose: true,
+            shade: 0.2,
+            area: ['70%', '750px'],
+            content: url,
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    {include file='public:left-menu'/}
+    <!--End 左侧导航-->
+    <!--头部信息-->
+    {include file='public:nav-header' title="系统管理" subTitle="支付配置"/}
+    <!--End 头部信息-->
+
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <form method="post" id="submit-form" class="row">
+                  {volist name="$info.config" id="config"}
+                  {switch name="$config.type"}
+                  {case value="textarea"}
+                  <div class="form-group col-md-12">
+                    <label class="form-title">{$config.label}</label>
+                    <textarea class="form-control" name="config[{$config.name}]" rows="5"
+                              placeholder="请输入{$config.label}">{$config_value[$config.name]}</textarea>
+                    <span class="help">{$config.desc}{if $config.link}<a href="{$config.link}" target="_blank"> 查看{$config.link}</a>{/if}</span>
+                  </div>
+                  {/case}
+                  {case value="text"}
+                  <div class="form-group col-md-12">
+                    <label class="form-title">{$config.label}</label>
+                    <input type="text" class="form-control" name="config[{$config.name}]" value="{$config_value[$config.name]}" placeholder="请输入{$config.label}"/>
+                    <span class="help">{$config.desc}{if $config.link}<a href="{$config.link}" target="_blank"> 查看{$config.link}</a>{/if}</span>
+                  </div>
+                  {/case}
+                  {/switch}
+                  {/volist}
+                  <div class="form-group col-md-12">
+                    <h5>是否启用</h5>
+                    <div class="btn-group form-group-toggle" data-toggle="buttons">
+                      <label class="radio-btn radio-theme {if $info.status==1}active{/if}">
+                        <input type="radio" name="status" value="1" {if $info.status==1}checked{/if}>
+                        <i class="mdi mdi-checkbox-marked-circle-outline"> 开启</i>
+                      </label>
+                      <label class="radio-btn radio-default {if $info.status==0}active{/if}">
+                        <input type="radio" name="status" value="0" {if $info.status==0}checked{/if}>
+                        <i class="mdi mdi-close-circle-outline"> 关闭</i> </label>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <input type="hidden" name="type" value="{$info.type}">
+                    <input type="hidden" name="code" value="{$info.code}">
+                    <button type="button" class="btn-theme submit-btn">确定</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(function(){
+    $('.submit-btn').click(function () {
+      var url = "{:url('System/plugin_edit')}";
+      var data = $('#submit-form').serialize();
+      public_ajax(url,data,function (data) {
+        if (data.code == 1) {
+          showSuccessMsg(data.msg, function () {
+            location.reload();
+          });
+        } else {
+          showErrorMsg(data.msg);
+        }
+      })
+    });
+  });
+</script>
+</body>
+</html>

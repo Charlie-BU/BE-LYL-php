@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>系统发生错误</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+</head>
+<body>
+<div class="container">
+    <h1 class="error">404</h1>
+    <p class="hint"><?php echo htmlentities($message); ?></p>
+</div>
+</body>
+<style>
+    html{
+        height: 100%;
+        background-color: #F8F8F8;
+    }
+    *{padding: 0;margin: 0;}
+    body{
+        height: 100%;
+    }
+    .container{
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: #FF5812;
+    }
+    .container .error{
+        font-size: 100px;
+        font-weight: 700;
+        text-shadow: 2px 2px 0 #f5f6fa, 4px 4px 0 #FF5812;
+        color: #FF5812;
+    }
+    .container .hint{
+        font-size: 14px;
+    }
+</style>
+</html>

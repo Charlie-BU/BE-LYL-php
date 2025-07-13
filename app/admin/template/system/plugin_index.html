@@ -1,0 +1,94 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        {include file='public:left-menu'/}
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        {include file='public:nav-header' title="系统管理" subTitle="支付配置"/}
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-toolbar">
+                                <div class="card-toolbar-center">
+                                    <a href="" class="table-btn btn-dark"><i class="mdi mdi-replay"></i></a>
+                                    <button class="table-btn btn-theme">共{$list|count}条记录</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 110px">操作</th>
+                                        <th>插件名称</th>
+                                        <th style="width: 120px">插件状态</th>
+                                        <th>插件描述</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {if $list}
+                                    {volist name="$list" id="vo"}
+                                    <tr>
+                                        <td>
+                                            <a class="table-btn btn-theme" href="{:url('System/plugin_edit',['type'=>$vo.type,'code'=>$vo.code])}"><i class="mdi mdi-pencil"></i>配置</a>
+                                        </td>
+                                        <td>{$vo.name}</td>
+                                        <td><span data-id="{$vo[$vo.pk]}"
+                                                  class="open mdi {$vo.status==1 ? 'text-success mdi-checkbox-marked-circle-outline' : 'text-red mdi-close-circle-outline'}"> {$vo.status_text}</span>
+                                        </td>
+                                        <td>{$vo.desc|default='无'}</td>
+                                    </tr>
+                                    {/volist}
+                                    {else/}
+                                    <tr>
+                                        <td class="no-data" colspan="50">
+                                            <i class="mdi mdi-alert-decagram"></i>没有符合条件的记录
+                                        </td>
+                                    </tr>
+                                    {/if}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('.open').on('click', function () {
+            if ($(this).hasClass('text-success')) {
+                var status = 0;
+                var add = 'text-red mdi-close-circle-outline';
+                var remove = 'text-success mdi-checkbox-marked-circle-outline';
+                var text = ' 禁用';
+            } else {
+                var status = 1;
+                var add = 'text-success mdi-checkbox-marked-circle-outline';
+                var remove = 'text-red mdi-close-circle-outline';
+                var text = ' 启用';
+            }
+            var id = $(this).attr('data-id');
+            var obj = $(this);
+            changeTableVal('plugin', 'status', id, status, function (res) {
+                if (res.code == 1) {
+                    obj.removeClass(remove).addClass(add).text(text);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

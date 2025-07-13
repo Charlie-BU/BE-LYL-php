@@ -1,0 +1,127 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        {include file='public:left-menu'/}
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        {include file='public:nav-header' title="会员管理" subTitle="会员详情"/}
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form method="post" id="submit-form" class="row">
+                                    <div class="form-group col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="form-title"><em class="require">*</em>手机号码</label>
+                                                <input type="text" value="{$user.mobile}" class="form-control" readonly name="mobile" placeholder="请输入手机号码"/>
+                                                <span class="error" id="err_mobile"></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-title"><em class="require">*</em>真实姓名</label>
+                                                <input type="text" value="{$user.realname}" class="form-control" name="realname" placeholder="请输入真实姓名"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label class="form-title"><em class="require">*</em>企业名称</label>
+                                                <input type="text" value="{$user.firm_name}" class="form-control" name="firm_name" placeholder="请输入企业名称"/>
+                                                <span class="error" id="err_firm_name"></span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-title"><em class="require">*</em>微信号</label>
+                                                <input type="text" value="{$user.weixin}" class="form-control" name="weixin" placeholder="请输入微信号"/>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-title"><em class="require">*</em>客服名称</label>
+                                                <input type="text" value="{$user.kf_name}" class="form-control" name="kf_name" placeholder="请输入客服名称"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="form-title">新密码</label>
+                                                <input type="password" class="form-control" name="password"
+                                                       placeholder="请输入新密码"/>
+                                                <span class="help">留空表示不修改密码</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-title">确认密码</label>
+                                                <input type="password" class="form-control" name="conpassword"
+                                                       placeholder="请输入确认密码"/>
+                                                <span class="help">留空表示不修改密码</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label><em class="require"></em>微信二维码（客服使用）</label>
+                                        <div class="upload-row">
+                                            <img class="upload-img" id="kf_img"
+                                                 src="{$user.kf_img|default='__STATIC__/images/upload.png'}">
+                                            <input type="hidden" name="kf_img" value="{$user.kf_img}">
+                                            <div class="input-group-btn">
+                                                <button onclick="GetUploadify(1,'kf_img','kf_img','call_back')"
+                                                        class="btn btn-default" type="button">上传图片
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <span class="error" id="err_kf_img"></span>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn-theme submit-btn">确定</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+<style>
+    .form-inline .item{
+        margin-right: 5px;
+    }
+    .form-inline .item span:last-child{
+        color: var(--red);
+    }
+</style>
+<script type="text/javascript">
+    $(function () {
+        $('.submit-btn').click(function () {
+            var url = "{:url('User/detail',[$user.pk=>$user[$user.pk]])}";
+            var data = $('#submit-form').serialize();
+            public_ajax(url,data,function (data) {
+                if (data.code == 1) {
+                    showSuccessMsg(data.msg, function () {
+                        if (data.result.url) {
+                            location.href = data.result.url;
+                        }
+                    });
+                } else {
+                    showErrorMsg(data.msg);
+                }
+            });
+        });
+    });
+    function call_back(fileurl_tmp,fileurl_id)
+    {
+        $("[name="+fileurl_id+"]").val(fileurl_tmp);
+        $("#"+fileurl_id).attr('src', fileurl_tmp);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+function exportExcel($expTitle,$expCellName,$expTableData){
+    $xlsTitle = iconv('utf-8', 'gb2312', $expTitle);//文件名称
+    $fileName = $expTitle.date('_YmdHis');//or $xlsTitle 文件名称可根据自己情况设定
+    $cellNum = count($expCellName);
+    $dataNum = count($expTableData);
+    import('org.util.PHPExcel.PHPExcel');
+
+    $objPHPExcel = new PHPExcel();
+    $cellName = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX','AY','AZ');
+
+    $objPHPExcel->getActiveSheet(0)->mergeCells('A1:'.$cellName[$cellNum-1].'1');//合并单元格
+    // $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', $expTitle.'  Export time:'.date('Y-m-d H:i:s'));
+    for($i=0;$i<$cellNum;$i++){
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue($cellName[$i].'2', $expCellName[$i][1]);
+    }
+    // Miscellaneous glyphs, UTF-8
+    for($i=0;$i<$dataNum;$i++){
+        for($j=0;$j<$cellNum;$j++){
+            $objPHPExcel->getActiveSheet(0)->setCellValue($cellName[$j].($i+3), $expTableData[$i][$expCellName[$j][0]]);
+        }
+    }
+
+    header('pragma:public');
+    header('Content-type:application/vnd.ms-excel;charset=utf-8;name="'.$xlsTitle.'.xls"');
+    header("Content-Disposition:attachment;filename=$fileName.xls");//attachment新窗口打印inline本窗口打印
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+    $objWriter->save('php://output');
+    exit;
+}
+public function daochu()
+    {
+        $map=array();
+        $status = input('status');
+        if (isset($status)) {
+            $map['status'] = $status;
+        }
+        $xlsName  = "提现列表";
+        $xlsCell  = array(
+            array('mobile','手机号'),
+            array('truename','真实姓名'),
+            array('zhifubao','支付宝'),
+            array('bankname','开户行'),
+            array('amount','提现金额'),
+            array('true_amount','实际打款'),
+            array('addtime','订单时间'),
+            array('status','订单状态'),
+        );
+
+        $xlsData  = Db::name('user_withdrawal')->Field('mobile,truename,zhifubao,bankname,amount,true_amount,addtime,status')->where($map)->order('addtime desc')->select();
+        foreach ($xlsData as $k => $v)
+        {
+//            $xlsData[$k]['order_no']=" ".$v['order_no']." ";
+//            switch ($v['pay_type']) {
+//                case 'wxpay':
+//                    $xlsData[$k]['pay_type']='微信';
+//                    break;
+//                case 'alipay':
+//                    $xlsData[$k]['pay_type']='支付宝';
+//                    break;
+//                case 'yue':
+//                    $xlsData[$k]['pay_type']='余额';
+//                    break;
+//                case 'xxpay':
+//                    $xlsData[$k]['pay_type']='线下转账';
+//                    break;
+//                default:
+//                    break;
+//            }
+            $xlsData[$k]['addtime']=date('Y-m-d H:i:s',$v['addtime']);
+            switch ($v['status']) {
+                case '0':
+                    $xlsData[$k]['status']='待审核';
+                    break;
+                case '1':
+                    $xlsData[$k]['status']='已提现';
+                    break;
+                case '2':
+                    $xlsData[$k]['status']='已拒绝';
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+        }
+        exportExcel($xlsName,$xlsCell,$xlsData);
+    }

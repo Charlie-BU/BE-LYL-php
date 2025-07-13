@@ -1,0 +1,168 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        {include file='public:left-menu'/}
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        {include file='public:nav-header' title="内容管理" subTitle="公告列表"/}
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-toolbar">
+                                <div class="toolbar-btn-action">
+                                    <a class="btn btn-label btn-theme" href="{:url('Content/add_edit_essay')}"><label><i
+                                            class="mdi mdi-plus-circle"></i></label> 添加公告</a>
+                                    <a class="btn btn-label btn-danger" onclick="handel()"><label><i
+                                            class="mdi mdi-delete"></i></label> 批量删除</a>
+                                </div>
+                                <div class="card-toolbar-center">
+                                    <a href="" class="table-btn btn-dark"><i class="mdi mdi-replay"></i></a>
+                                    <button class="table-btn btn-theme">共{$list->total()}条记录
+                                        当前第{$list->currentPage()}页
+                                    </button>
+                                </div>
+                                <form class="table-form" method="post" action="">
+                                    <div class="table-form-group">
+                                        <select name="open" class="input-group-select">
+                                            <option value="">是否显示</option>
+                                            <option value="1" {if $Request.param.open=='1'}selected{/if}>是</option>
+                                            <option value="0" {if $Request.param.open=='0'}selected{/if}>否</option>
+                                        </select>
+                                        <input type="text" value="{$Request.param.keyword}" name="keyword"
+                                               placeholder="查询公告标题">
+                                        <button class="btn btn-default" type="submit">搜索</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 50px">
+                                            <label class="table-checkbox">
+                                                <input type="checkbox" id="check-all"><span></span>
+                                            </label>
+                                        </th>
+                                        <th>操作</th>
+                                        <th>ID</th>
+                                        <th>标题</th>
+                                        <th>排序</th>
+                                        <th>是否显示</th>
+                                        <th>创建时间</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {if $list->isEmpty()}
+                                    <tr>
+                                        <td class="no-data" colspan="50">
+                                            <i class="mdi mdi-alert-decagram"></i>没有符合条件的记录
+                                        </td>
+                                    </tr>
+                                    {else/}
+                                    {volist name="$list" id="vo"}
+                                    <tr>
+                                        <td>
+                                            <label class="table-checkbox">
+                                                <input type="checkbox" class="checkbox"
+                                                       value="{$vo[$vo.pk]}"><span></span>
+                                            </label>
+                                        </td>
+                                        <td><a class="table-btn btn-theme" href="{:url('Content/add_edit_essay',['id'=>$vo[$vo.pk]])}"><i class="mdi mdi-pencil"></i>编辑</a>
+                                        </td>
+                                        <td>{$vo[$vo.pk]}</td>
+                                        <td>{$vo.title}</td>
+                                        <td><input data-id="{$vo[$vo.pk]}" type="text" class="table-input" value="{$vo.sort}"></td>
+                                        <td><span data-id="{$vo[$vo.pk]}"
+                                                  class="open mdi {$vo.open==1 ? 'text-success mdi-checkbox-marked-circle-outline' : 'text-red mdi-close-circle-outline'}"> {$vo.open_text}</span>
+                                        </td>
+                                        <td>{$vo.add_time}</td>
+                                    </tr>
+                                    {/volist}
+                                    {/if}
+                                    </tbody>
+                                </table>
+                                <!--分页-->
+                                <div class="page">
+                                    {$page|raw}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+<!--图片预览插件-->
+<script type="text/javascript">
+    $(function () {
+        $('.open').on('click', function () {
+            if ($(this).hasClass('text-success')) {
+                var open = 0;
+                var add = 'text-red mdi-close-circle-outline';
+                var remove = 'text-success mdi-checkbox-marked-circle-outline';
+                var text = ' 否';
+            } else {
+                var open = 1;
+                var add = 'text-success mdi-checkbox-marked-circle-outline';
+                var remove = 'text-red mdi-close-circle-outline';
+                var text = ' 是';
+            }
+            var id = $(this).attr('data-id');
+            var obj = $(this);
+            changeTableVal('essay', 'open', id, open, function (res) {
+                if (res.code == 1) {
+                    obj.removeClass(remove).addClass(add).text(text);
+                }
+            });
+        });
+        $('.table-input').on('blur',function () {
+            var id=$(this).attr('data-id');
+            var val=$(this).val();
+            if (val==''){
+                showErrorMsg("请输入排序");
+                return;
+            }
+            changeTableVal('essay', 'sort', id, val, function (res) {
+            });
+        });
+    });
+    function handel() {
+        var checkbox = $('.checkbox:checked');
+        if (checkbox.length == 0) {
+            showErrorMsg("请选择数据");
+            return
+        }
+        var ids = [];
+        $.each(checkbox, function (index, item) {
+            ids.push(item.value)
+        });
+        var text = "确认操作?";
+        showConfirm(text, function () {
+            var url = "{:url('Index/public_delete')}";
+            var data = {'ids': ids,'table':'essay'};
+            public_ajax(url, data, function (res) {
+                if (res.code==1){
+                    showSuccessMsg(res.msg,function () {
+                        location.reload()
+                    })
+                }else {
+                    showErrorMsg(res.msg);
+                }
+            })
+        })
+    }
+</script>
+</body>
+</html>

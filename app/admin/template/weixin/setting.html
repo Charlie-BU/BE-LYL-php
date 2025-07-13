@@ -1,0 +1,171 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    {include file='public:left-menu'/}
+    <!--End 左侧导航-->
+    <!--头部信息-->
+    {include file='public:nav-header' title="微信管理" subTitle="公众号配置"/}
+    <!--End 头部信息-->
+
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <form method="post" id="submit-form" class="row">
+                  <div class="form-group col-md-12">
+                    <label class="form-title"><em class="require">*</em>URL(服务器地址)</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" value="{$apiurl}" disabled>
+                      <span class="input-group-btn">
+                          <button class="btn btn-default" id="fuzhi" type="button">复制</button>
+                        </span>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label class="form-title"><em class="require">*</em>公众号名称</label>
+                    <input type="text" class="form-control" name="wxname" value="{$info.wxname}" placeholder="请输入公众号名称"/>
+                    <span class="error" id="err_wxname"></span>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label class="form-title"><em class="require">*</em>Token</label>
+                    <input type="text" class="form-control" name="w_token" value="{$info.w_token}" placeholder="请输入Token"/>
+                    <span class="error" id="err_w_token"></span>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label class="form-title"><em class="require">*</em>公众号原始id</label>
+                    <input type="text" class="form-control" name="wxid" value="{$info.wxid}" placeholder="请输入公众号原始id"/>
+                    <span class="error" id="err_wxid"></span>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label class="form-title"><em class="require">*</em>微信号</label>
+                    <input type="text" class="form-control" name="weixin" value="{$info.weixin}" placeholder="请输入微信号"/>
+                    <span class="error" id="err_weixin"></span>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label class="form-title"><em class="require">*</em>AppID</label>
+                    <input type="text" class="form-control" name="appid" value="{$info.appid}" placeholder="请输入AppID"/>
+                    <span class="error" id="err_appid"></span>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label class="form-title"><em class="require">*</em>AppSecret</label>
+                    <input type="text" class="form-control" name="appsecret" value="{$info.appsecret}" placeholder="请输入AppSecret"/>
+                    <span class="error" id="err_appsecret"></span>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label>头像地址</label>
+                    <div class="upload-row">
+                      <img class="upload-img" id="headerpic" src="{$info.headerpic|default='__STATIC__/images/upload.png'}">
+                      <input type="hidden" name="headerpic" value="{$info.headerpic}">
+                      <div class="input-group-btn">
+                        <button onclick="GetUploadify(1,'headerpic','weixin','call_back')" class="btn btn-default" type="button">上传图片</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label>公众号二维码</label>
+                    <div class="upload-row">
+                      <img class="upload-img" id="qr" src="{$info.qr|default='__STATIC__/images/upload.png'}">
+                      <input type="hidden" name="qr" value="{$info.qr}">
+                      <div class="input-group-btn">
+                        <button onclick="GetUploadify(1,'qr','weixin','call_back')" class="btn btn-default" type="button">上传图片</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-inline col-md-12">
+                    <span class="tit">公众号类型</span>
+                    <select class="input-group-select" name="type">
+                      <option value="1" {if $info.type==1}selected{/if}>订阅号</option>
+                      <option value="2" {if $info.type==2}selected{/if}>认证订阅号</option>
+                      <option value="3" {if $info.type==3}selected{/if}>服务号</option>
+                      <option value="4" {if $info.type==4}selected{/if}>认证服务号</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label>接入状态</label>
+                    <div class="clearfix">
+                      <label class="lyear-radio radio-inline radio-theme">
+                        <input type="radio" name="wait_access" value="0" {if $info.wait_access==0}checked{/if}><span>等待接入</span>
+                      </label>
+                      <label class="lyear-radio radio-inline radio-theme">
+                        <input type="radio" name="wait_access" value="1" {if $info.wait_access==1}checked{/if}><span>已接入</span>
+                      </label>
+                    </div>
+                    <span class="help text-red">重要:任何时候都要勾选"已接入",否则微信功能无法正常使用. 除非 , 在接入微信(开发 ->基本配置 -> 修改配置)提交url和token
+提示'url超时'或'token'错误时, 此处临时勾选为"等待接入",提交成功后改为"已接入"</span>
+                  </div>
+                  <div class="col-md-12">
+                    <input type="hidden" name="{$info.pk}" value="{$info[$info.pk]}">
+                    <button type="button" class="btn-theme submit-btn">确定</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+</div>
+<script type="text/javascript" src="__STATIC__/js/clipboard.js"></script>
+<script type="text/javascript">
+  $(function(){
+    $('.submit-btn').click(function () {
+      $('span.error').hide();
+      $('.form-group').removeClass('has-error');
+      var url = "{:url('Weixin/setting_save',[$info.pk=>$info[$info.pk]])}";
+      var data = $('#submit-form').serialize();
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function (data) {
+          if (data.code == 1) {
+            showSuccessMsg(data.msg, function () {
+              if (data.result.url) {
+                location.href = data.result.url;
+              }
+            });
+          } else if (data.code == 10) {
+            showErrorMsg(data.msg);
+            $.each(data.result, function(index, item) {
+              $('#err_' + index).text(item).show();
+              $('#err_' + index).parent().addClass('has-error');
+            });
+          } else {
+            showErrorMsg(data.msg);
+          }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+          showErrorMsg("网络失败，请刷新后重试!");
+        }
+      });
+    });
+  });
+  function call_back(fileurl_tmp,fileurl_id)
+  {
+    $("[name="+fileurl_id+"]").val(fileurl_tmp);
+    $("#"+fileurl_id).attr('src', fileurl_tmp);
+  }
+  var clipboard = new ClipboardJS('#fuzhi', {
+    text: function() {
+      return '{$apiurl}';
+    }
+  });
+
+  clipboard.on('success', function(e) {
+    showSuccessMsg('复制成功');
+  });
+
+  clipboard.on('error', function(e) {
+    showErrorMsg('复制失败');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        {include file='public:left-menu'/}
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        {include file='public:nav-header' title="权限管理" subTitle="角色管理"/}
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-toolbar">
+                                <div class="toolbar-btn-action">
+                                    <a class="btn btn-label btn-theme" href="{:url('Admin/add_edit_role')}"><label><i
+                                            class="mdi mdi-plus-circle"></i></label> 添加角色</a>
+                                </div>
+                                <div class="card-toolbar-center">
+                                    <a href="" class="table-btn btn-dark"><i class="mdi mdi-replay"></i></a>
+                                    <button class="table-btn btn-theme">共{$list->total()}条记录
+                                        当前第{$list->currentPage()}页
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 170px">操作</th>
+                                        <th>ID</th>
+                                        <th>角色名称</th>
+                                        <th>描述</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {if $list->isEmpty()}
+                                    <tr>
+                                        <td class="no-data" colspan="50">
+                                            <i class="mdi mdi-alert-decagram"></i>没有符合条件的记录
+                                        </td>
+                                    </tr>
+                                    {else/}
+                                    {volist name="$list" id="vo"}
+                                    <tr>
+                                        <td>
+                                            <a class="table-btn btn-theme" href="{:url('Admin/add_edit_role',['role_id'=>$vo[$vo.pk]])}"><i class="mdi mdi-pencil"></i>编辑</a>
+                                            <a class="table-btn btn-danger" onclick="handel('{$vo[$vo.pk]}')"><i class="mdi mdi-delete"></i>删除</a>
+                                        </td>
+                                        <td>{$vo[$vo.pk]}</td>
+                                        <td>{$vo.role_name}</td>
+                                        <td>{$vo.role_desc|default='无'}</td>
+                                    </tr>
+                                    {/volist}
+                                    {/if}
+                                    </tbody>
+                                </table>
+                                <!--分页-->
+                                <div class="page">
+                                    {$page|raw}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+    });
+    function handel(id) {
+        if (id == '') {
+            showErrorMsg("请选择数据");
+            return
+        }
+        var text = "确认删除?";
+        showConfirm(text, function () {
+            var url = "{:url('Admin/roleDel')}";
+            var data = {'role_id': id};
+            public_ajax(url, data, function (res) {
+                if (res.code==1){
+                    showSuccessMsg(res.msg,function () {
+                        location.reload()
+                    })
+                }else {
+                    showErrorMsg(res.msg);
+                }
+            })
+        })
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    {include file='public:left-menu'/}
+    <!--End 左侧导航-->
+    
+    <!--头部信息-->
+    {include file='public:nav-header' title="数据管理" subTitle="销售概况"/}
+    <!--End 头部信息-->
+    
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+      
+      <div class="container-fluid">
+        
+
+        <div class="row">
+
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h4>销售概况</h4>
+                <form class="table-form" method="post" action="">
+                  <div class="table-form-group">
+                    <input data-type="time" readonly id="start_time" name="start_time" type="text" value="{$start_time}">
+                    <button class="btn btn-default" type="button">开始时间</button>
+                  </div>
+                  <div class="table-form-group">
+                    <input data-type="time" name="end_time" id="end_time" type="text" value="{$end_time}" readonly>
+                    <button class="btn btn-default" type="button">结束时间</button>
+                  </div>
+                  <div class="table-form-group">
+                    <button style="margin-left: -1px" class="btn btn-default" type="submit">搜索</button>
+                  </div>
+                </form>
+              </div>
+              <div class="card-body">
+                <div id="order" class="js-chartjs-bars"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header"><h4>订单统计</h4></div>
+              <div class="card-body">
+                <table class="table table-bordered table-striped table-hover" style="margin-bottom: 10px">
+                  <thead>
+                  <tr>
+                    <th>操作</th>
+                    <th>时间</th>
+                    <th>订单数</th>
+                    <th>订单总额</th>
+                    <th>客单价</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {volist name="$list" id="list"}
+                  <tr>
+                    <td style="width: 130px">
+                      <a class="table-btn btn-theme" href="{:url('Report/sale_order',['start_time'=>$list.day,'end_time'=>$list.end])}"><i class="mdi mdi-magnify"></i>查看订单列表</a>
+                    </td>
+                    <td>{$list.day}</td>
+                    <td>{$list.order_num}</td>
+                    <td>{$list.amount}</td>
+                    <td>{$list.sign}</td>
+                  </tr>
+                  {/volist}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+  <style>
+    .link{
+      color: #fff;
+    }
+    .link:hover{
+      color: #fff;
+    }
+    .card{
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .js-chartjs-bars{
+      width: 100%;
+      height: 400px;
+    }
+  </style>
+</div>
+<!--图表插件-->
+<script type="text/javascript" src="__STATIC__/js/echarts.min.js"></script>
+<script src="__STATIC__/plugin/laydate/laydate/laydate.js"></script>
+<script type="text/javascript">
+  var order_result = {$order_result|raw};
+$(document).ready(function(e) {
+  $('#start_time').layDate();
+  $('#end_time').layDate();
+  var order = document.getElementById('order');
+  var orderChart = echarts.init(order);
+
+  var orderOption={
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+        crossStyle: {
+          color: 'rgba(0,122,255,0.5)'
+        }
+      }
+    },
+    textStyle:{
+      color:"#8b95a5"
+    },
+    grid: {
+      left: '1%',
+      right: '1%',
+      bottom: '3%',
+      containLabel: true,
+    },
+    legend: {
+      data: ['订单金额', '客单价', '订单数']
+    },
+    xAxis: [
+      {
+        type: 'category',
+        data: order_result.time || [],
+        axisPointer: {
+          type: 'shadow',
+          shadowStyle:{
+            color:"rgba(0,122,255,0.1)"
+          }
+        },
+        axisLine:{
+          show:true,
+          lineStyle:{
+            color:"rgba(0,122,255,0.8)"
+          }
+        },
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value',
+        name: '金额',
+        splitLine:{
+          show:true,
+          lineStyle:{
+            color:"rgba(0,122,255,0.1)"
+          }
+        },
+        axisLine:{
+          show:true,
+          lineStyle:{
+            color:"rgba(0,122,255,0.8)"
+          }
+        },
+        axisLabel: {
+          formatter: '￥ {value}'
+        }
+      },
+      {
+        type: 'value',
+        name: '客单价',
+        splitLine:{
+          show:true,
+          lineStyle:{
+            color:"rgba(0,122,255,0.1)"
+          }
+        },
+        axisLine:{
+          show:true,
+          lineStyle:{
+            color:"rgba(0,122,255,0.8)"
+          }
+        },
+        axisLabel: {
+          formatter: '￥ {value}'
+        }
+      }
+    ],
+    series: [
+      {
+        name: '订单金额',
+        type: 'bar',
+        color:"#15C377",
+        data: order_result.amount || []
+      },
+      {
+        name: '客单价',
+        type: 'bar',
+        yAxisIndex: 1,
+        color:"#007AFF",
+        data: order_result.sign || []
+      },
+      {
+        name: '订单数',
+        type: 'line',
+        color:"#F96868",
+        data: order_result.order || []
+      },
+    ]
+  };
+  orderOption && orderChart.setOption(orderOption);
+});
+</script>
+</body>
+</html>

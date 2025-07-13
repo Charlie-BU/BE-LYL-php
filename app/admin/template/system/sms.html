@@ -1,0 +1,115 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        {include file='public:left-menu'/}
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        {include file='public:nav-header' title="系统管理" subTitle="系统设置"/}
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <ul class="nav nav-tabs page-tabs">
+                                {volist name="$group_list" id="group"}
+                                <li class="{$key==$inc_type ?'active':''}"><a href="{:url('System/index',['inc_type'=>$key])}">{$group}</a></li>
+                                {/volist}
+                            </ul>
+                            <div class="tab-content" style="padding: 0">
+                                <div class="tab-pane active">
+                                    <form action="#!" method="post" class="edit-form">
+                                        <div class="card-header form-header"><h4>阿里云短信设置</h4></div>
+                                        <div class="form-info">
+                                            <div class="form-group row">
+                                                <div class="col-md-6">
+                                                    <label for="access_key">AccessKey</label>
+                                                    <input class="form-control" type="text" id="access_key" name="access_key"
+                                                            value="{$config.access_key}" placeholder="请输入短信平台[access_key]">
+                                                    <small class="help">短信配置-AccessKey</small>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="secret">Secret</label>
+                                                    <input class="form-control" type="text" id="secret" name="secret"
+                                                            value="{$config.secret}" placeholder="请输入短信平台[secret]">
+                                                    <small class="help">短信配置-Secret</small>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-6">
+                                                    <label for="sign_name">短信签名</label>
+                                                    <input class="form-control" type="text" id="sign_name" name="sign_name"
+                                                            value="{$config.sign_name}" placeholder="请输入短信平台签名">
+                                                    <small class="help">短信配置-短信签名</small>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="sms_template">模板ID</label>
+                                                    <input class="form-control" type="text" id="sms_template" name="sms_template"
+                                                            value="{$config.sms_template}" placeholder="请输入短信平台模板ID">
+                                                    <small class="help">短信配置-验证码模板ID</small>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-4">
+                                                    <label>验证码超时时间</label>
+                                                    <div class="btn-group form-group-toggle">
+                                                        <select class="input-group-select" name="sms_time_out">
+                                                            <option value="60" {if $config.sms_time_out==60}selected{/if}>1分钟</option>
+                                                            <option value="120" {if $config.sms_time_out==120}selected{/if}>2分钟</option>
+                                                            <option value="180" {if $config.sms_time_out==180}selected{/if}>3分钟</option>
+                                                            <option value="300" {if $config.sms_time_out==300}selected{/if}>5分钟</option>
+                                                            <option value="600" {if $config.sms_time_out==600}selected{/if}>10分钟</option>
+                                                            <option value="1200" {if $config.sms_time_out==1200}selected{/if}>20分钟</option>
+                                                            <option value="1800" {if $config.sms_time_out==1800}selected{/if}>30分钟</option>
+                                                        </select>
+                                                    </div>
+                                                    <small class="help">发送短信验证码间隔时间</small>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="hidden" name="inc_type" value="{$inc_type}">
+                                                <button type="button" class="btn-theme submit-btn">确定</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+<style>
+    .form-info{
+        padding: 10px 24px;
+    }
+</style>
+<script type="text/javascript">
+    $(function () {
+        $('.submit-btn').on('click',function () {
+            var url = "{:url('System/handle')}";
+            var data = $('.edit-form').serialize();
+            public_ajax(url,data,function (res) {
+                if (res.code == 1) {
+                    showSuccessMsg(res.msg);
+                } else {
+                    showErrorMsg(res.msg);
+                }
+            })
+        })
+    });
+    function call_back(fileurl_tmp,fileurl_id)
+    {
+        $("[name="+fileurl_id+"]").val(fileurl_tmp);
+        $("#"+fileurl_id).attr('src', fileurl_tmp);
+    }
+</script>
+</body>
+</html>

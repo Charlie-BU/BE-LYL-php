@@ -1,0 +1,190 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    {include file='public:left-menu'/}
+    <!--End 左侧导航-->
+    <!--头部信息-->
+    {include file='public:nav-header' title="内容管理" subTitle="编辑协议"/}
+    <!--End 头部信息-->
+    <!--页面主要内容-->
+    <main class="lyear-layout-content" id="app">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <form method="post" id="submit-form" class="">
+                  <div class="form-group row">
+                    <div class="col-md-12">
+                      <label class="form-title"><em class="require">*</em>标题</label>
+                      <input type="text" class="form-control" name="title" value="{$info.title}" placeholder="请输入标题"/>
+                      <span class="error" id="err_title"></span>
+                    </div>
+                  </div>
+                  <div v-if="id == 3">
+                    <div class="form-group row">
+                      <div class="col-md-12">
+                        <label><em class="require">*</em>图片</label>
+                        <div class="upload-row">
+                          <img class="upload-img" id="image" src="{$info.image|default='__STATIC__/images/upload.png'}">
+                          <input type="hidden" name="image" value="{$info.image}">
+                          <div class="input-group-btn">
+                            <button onclick="GetUploadify(1,'image','protocol','call_back')" class="btn btn-default" type="button">上传图片</button>
+                          </div>
+                        </div>
+                        <span class="error" id="err_image"></span>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-md-4">
+                        <label class="form-title"><em class="require">*</em>公司名称</label>
+                        <input type="text" class="form-control" name="gs_name" value="{$info.gs_name}" placeholder="请输入公司名称"/>
+                        <span class="error" id="err_gs_name"></span>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-title"><em class="require">*</em>成立时间</label>
+                        <input type="text" class="form-control" name="cl_time" value="{$info.cl_time}" placeholder="请输入成立时间"/>
+                        <span class="error" id="err_cl_time"></span>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-title"><em class="require">*</em>公司规模</label>
+                        <input type="text" class="form-control" name="gs_gm" value="{$info.gs_gm}" placeholder="请输入公司规模"/>
+                        <span class="error" id="err_gs_gm"></span>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-md-12">
+                        <label class="form-title"><em class="require">*</em>主营业务</label>
+                        <textarea class="form-control" name="zy_yw" rows="6" placeholder="请输入主营业务">{$info.zy_yw}</textarea>
+                        <span class="error" id="err_zy_yw"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-if="id == 4">
+                    <div class="form-group row">
+                      <div class="col-md-6">
+                        <label class="form-title"><em class="require">*</em>公司名称</label>
+                        <input type="text" class="form-control" name="gs_name" value="{$info.gs_name}" placeholder="请输入公司名称"/>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-title"><em class="require">*</em>联系电话</label>
+                        <input type="text" class="form-control" name="phone" value="{$info.phone}" placeholder="请输入联系电话"/>
+                        <span class="error" id="err_phone"></span>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-md-12">
+                        <label class="form-title"><em class="require">*</em>具体位置</label>
+                        <textarea class="form-control" name="address" rows="6" placeholder="请输入具体位置">{$info.address}</textarea>
+                        <span class="error" id="err_address"></span>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-md-6">
+                        <label class="form-title"><em class="require">*</em>经度</label>
+                        <input type="text" class="form-control" name="longitude" value="{$info.longitude}" placeholder="请输入经度"/>
+                        <span class="help">请拾取腾讯地图经度<a href="https://lbs.qq.com/getPoint" target="_blank"> 点击前往</a></span>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-title"><em class="require">*</em>纬度</label>
+                        <input type="text" class="form-control" name="latitude" value="{$info.latitude}" placeholder="请输入纬度"/>
+                        <span class="help">请拾取腾讯地图纬度<a href="https://lbs.qq.com/getPoint" target="_blank"> 点击前往</a></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class=" col-md-12">
+                      <label class="form-title"><em class="require">*</em>内容</label>
+                      <textarea class="ueditor" id="content" name="content" placeholder="请输入内容">{$info.content}</textarea>
+                      <span class="error" id="err_content"></span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <input type="hidden" name="{$info.pk}" value="{$info[$info.pk]}">
+                      <button type="button" class="btn-theme submit-btn">确定</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+</div>
+{load href="__ADMIN__/plugin/Ueditor/ueditor.config.js"/}
+{load href="__ADMIN__/plugin/Ueditor/ueditor.all.min.js"/}
+{load href="__ADMIN__/plugin/Ueditor/lang/zh-cn/zh-cn.js"/}
+<script type="text/javascript">
+  var _this;
+  var app = new Vue({
+    el: '#app',
+    data: {
+      id: '{$info.id}'|| 0,
+    },
+    created() {
+      _this=this
+    },
+    methods: {
+    },
+    mounted(){}
+  });
+  var url="{:url('Ueditor/index',['savePath'=>'protocol'])}";
+  var ue = UE.getEditor('content',{
+    serverUrl :url,
+    zIndex: 999,
+    initialFrameWidth: "100%", //初化宽度
+    initialFrameHeight: 300, //初化高度
+    focus: false, //初始化时，是否让编辑器获得焦点true或false
+    maximumWords: 99999, //允许的最大字符数 'fullscreen',
+    removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',
+    pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+    autoHeightEnabled: true
+  });
+  $(function(){
+    $('.submit-btn').click(function () {
+      $('span.error').hide();
+      $('.form-group').removeClass('has-error');
+      var url = "{:url('Content/add_edit_protocol',[$info.pk=>$info[$info.pk]])}";
+      var data = $('#submit-form').serialize();
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function (data) {
+          if (data.code == 1) {
+            showSuccessMsg(data.msg, function () {
+              if (data.result.url) {
+                location.href = data.result.url;
+              }
+            });
+          } else if (data.code == 10) {
+            showErrorMsg(data.msg);
+            $.each(data.result, function(index, item) {
+              $('#err_' + index).text(item).show();
+              $('#err_' + index).parent().addClass('has-error');
+            });
+          } else {
+            showErrorMsg(data.msg);
+          }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+          showErrorMsg("网络失败，请刷新后重试!");
+        }
+      });
+    });
+  });
+  function call_back(fileurl_tmp,fileurl_id)
+  {
+    $("[name="+fileurl_id+"]").val(fileurl_tmp);
+    $("#"+fileurl_id).attr('src', fileurl_tmp);
+  }
+</script>
+</body>
+</html>

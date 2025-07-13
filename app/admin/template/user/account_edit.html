@@ -1,0 +1,93 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        {include file='public:left-menu'/}
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        {include file='public:nav-header' title="会员管理" subTitle="资金调节"/}
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form method="post" id="submit-form" class="row">
+                                    <div class="form-group col-md-12">
+                                        <label class="form-title">手机号码</label>
+                                        <input type="text" disabled class="form-control" value="{$user.mobile}" />
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label class="form-title">可用资金</label>
+                                        <div class="form-inline">
+                                            {volist name="$user_account" id="vo"}
+                                            <div class="item">
+                                                <span>{$vo.name}</span>
+                                                <span>{$user[$key]}</span>
+                                            </div>
+                                            {/volist}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" style="padding-left: 0;padding-right: 0">
+                                        {volist name="$user_account" id="vo"}
+                                        <div class="col-md-6">
+                                            <label class="form-title">变动{$vo.name}</label>
+                                            <input type="text" class="form-control" name="{$key}" placeholder="请输入变动资金"/>
+                                            <small class="help">增加直接输入整数 减少输入负数 如-100</small>
+                                        </div>
+                                        {/volist}
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label class="form-title">操作备注</label>
+                                        <textarea class="form-control" name="desc" rows="6" placeholder="不填写则默认为管理调整"></textarea>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn-theme submit-btn">确定</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+<style>
+    .form-inline .item{
+        margin-right: 5px;
+    }
+    .form-inline .item span:last-child{
+        color: var(--red);
+    }
+    .col-md-6{
+        margin-bottom: 15px;
+    }
+</style>
+<script type="text/javascript">
+    $(function () {
+        $('.submit-btn').click(function () {
+            var url = "{:url('User/account_edit',[$user.pk=>$user[$user.pk]])}";
+            var data = $('#submit-form').serialize();
+            public_ajax(url,data,function (data) {
+                if (data.code == 1) {
+                    showSuccessMsg(data.msg, function () {
+                        if (data.result.url) {
+                            location.href = data.result.url;
+                        }
+                    });
+                }  else {
+                    showErrorMsg(data.msg);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    {include file='public:left-menu'/}
+    <!--End 左侧导航-->
+    <!--头部信息-->
+    {include file='public:nav-header' title="内容管理" subTitle="添加编辑公告"/}
+    <!--End 头部信息-->
+    <!--页面主要内容-->
+    <main class="lyear-layout-content" id="app">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <form method="post" id="submit-form" class="row">
+                  <div class="form-group col-md-12">
+                    <label class="form-title"><em class="require">*</em>公告标题</label>
+                    <input type="text" class="form-control" name="title" value="{$info.title}" placeholder="请输入公告标题"/>
+                    <span class="error" id="err_title"></span>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label class="form-title"><em class="require">*</em>公告描述</label>
+                    <textarea class="form-control" name="description" rows="3" placeholder="请输入公告描述">{$info.description}</textarea>
+                    <span class="error" id="err_description"></span>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label>公告视频</label>
+                    <div class="upload-row">
+                      <div class="upload-row-item" v-show="video">
+                        <video class="upload-video" :src="video" controls></video>
+                        <button type="button" @click="shanchu('video')" class="btn btn-default"><span class="mdi mdi-close"></span></button>
+                      </div>
+                      <input type="hidden" name="video" :value="video">
+                      <div class="input-group-btn">
+                        <button onclick="GetUploadify(1,'','essay','call_back1','Flash')" class="btn btn-default" type="button">上传视频</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <h5><em class="require">*</em>是否显示</h5>
+                    <div class="btn-group form-group-toggle">
+                      <label class="radio-btn radio-theme {if $info.open==1}active{/if}">
+                        <input type="radio" name="open" value="1" {if $info.open==1}checked{/if}>
+                        <i class="mdi mdi-checkbox-marked-circle-outline"> 是</i>
+                      </label>
+                      <label class="radio-btn radio-default {if $info.open==0}active{/if}">
+                        <input type="radio" name="open" value="0" {if $info.open==0}checked{/if}>
+                        <i class="mdi mdi-close-circle-outline"> 否</i> </label>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label class="form-title"><em class="require">*</em>公告排序</label>
+                    <input type="text" class="form-control" name="sort" value="{$info.sort|default=50}" placeholder="请输入公告排序"/>
+                    <span class="error" id="err_sort"></span>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label class="form-title"><em class="require">*</em>公告内容</label>
+                    <textarea class="ueditor" id="content" name="content" placeholder="请输入公告内容">{$info.content}</textarea>
+                    <span class="error" id="err_content"></span>
+                  </div>
+                  <div class="col-md-12">
+                    <input type="hidden" name="{$info.pk}" value="{$info[$info.pk]}">
+                    <button type="button" class="btn-theme submit-btn">确定</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+</div>
+<style>
+  .upload-row{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .upload-row-item{
+    position: relative;
+  }
+  .upload-row-item .upload-video{
+    margin-right: 15px;
+    width: 200px;
+  }
+  .upload-row-item .btn-default{
+    position: absolute;
+    left: -10px;
+    top: -10px;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+{load href="__ADMIN__/plugin/Ueditor/ueditor.config.js"/}
+{load href="__ADMIN__/plugin/Ueditor/ueditor.all.min.js"/}
+{load href="__ADMIN__/plugin/Ueditor/lang/zh-cn/zh-cn.js"/}
+<script type="text/javascript">
+  var _this;
+  var app = new Vue({
+    el: '#app',
+    data: {
+      image: '{$info.image}'|| '',
+      video: '{$info.video}'|| '',
+    },
+    created() {
+      _this=this
+    },
+    methods: {
+      shanchu(field){
+        _this[field] = ''
+      }
+    },
+    mounted(){
+      window.call_back = function (fileurl_tmp,fileurl_id) {
+        _this.image = fileurl_tmp
+      }
+      window.call_back1 = function (fileurl_tmp,fileurl_id) {
+        _this.video = fileurl_tmp
+      }
+    }
+  });
+  var url="{:url('Ueditor/index',['savePath'=>'essay'])}";
+  var ue = UE.getEditor('content',{
+    serverUrl :url,
+    zIndex: 999,
+    initialFrameWidth: "100%", //初化宽度
+    initialFrameHeight: 300, //初化高度
+    focus: false, //初始化时，是否让编辑器获得焦点true或false
+    maximumWords: 99999, //允许的最大字符数 'fullscreen',
+    removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',
+    pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+    autoHeightEnabled: true
+  });
+  $(function(){
+    $('.submit-btn').click(function () {
+      $('span.error').hide();
+      $('.form-group').removeClass('has-error');
+      var url = "{:url('Content/add_edit_essay',[$info.pk=>$info[$info.pk]])}";
+      var data = $('#submit-form').serialize();
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function (data) {
+          if (data.code == 1) {
+            showSuccessMsg(data.msg, function () {
+              if (data.result.url) {
+                location.href = data.result.url;
+              }
+            });
+          } else if (data.code == 10) {
+            showErrorMsg(data.msg);
+            $.each(data.result, function(index, item) {
+              $('#err_' + index).text(item).show();
+              $('#err_' + index).parent().addClass('has-error');
+            });
+          } else {
+            showErrorMsg(data.msg);
+          }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+          showErrorMsg("网络失败，请刷新后重试!");
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    {include file='public:left-menu'/}
+    <!--End 左侧导航-->
+    <!--头部信息-->
+    {include file='public:nav-header' title="会员管理" subTitle="$text"/}
+    <!--End 头部信息-->
+
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-toolbar">
+                <div class="card-toolbar-center">
+                  <a href="" class="table-btn btn-dark"><i class="mdi mdi-replay"></i></a>
+                  <button class="table-btn btn-theme">共{$list->total()}条记录 当前第{$list->currentPage()}页</button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                    <tr>
+                      <th>编号</th>
+                      <th>收货人</th>
+                      <th>联系方式</th>
+                      <th>地址</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {if $list->isEmpty()}
+                    <tr>
+                      <td class="no-data" colspan="50">
+                        <i class="mdi mdi-alert-decagram"></i>没有符合条件的记录
+                      </td>
+                    </tr>
+                    {else/}
+                    {volist name="$list" id="vo"}
+                    <tr>
+                      <td>{$vo.address_id}</td>
+                      <td>{$vo.consignee}</td>
+                      <td>{$vo.mobile}</td>
+                      <td>{$vo.all_address}</td>
+                    </tr>
+                    {/volist}
+                    {/if}
+                    </tbody>
+                  </table>
+                </div>
+                <!--分页-->
+                <div class="page">
+                  {$page|raw}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+</div>
+<!--日期选择插件-->
+<script src="__STATIC__/plugin/laydate/laydate/laydate.js"></script>
+<script type="text/javascript">
+  $(function(){
+    $('#start_time').layDate();
+    $('#end_time').layDate();
+  });
+</script>
+</body>
+</html>

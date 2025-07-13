@@ -1,0 +1,318 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        {include file='public:left-menu'/}
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        {include file='public:nav-header' title="项目管理" subTitle="添加编辑合约"/}
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content"  id="app">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form method="post" id="submit-form" class="row">
+                                    <div class="form-group col-md-12">
+                                        <label class="form-title"><em class="require">*</em>合约名称</label>
+                                        <input type="text" class="form-control" name="name" value="{$info.name}" placeholder="请输入合约名称"/>
+                                        <span class="error" id="err_name"></span>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label class="form-title"><em class="require">*</em>合约编号</label>
+                                        <input type="text" class="form-control" name="order_sn" value="{$info.order_sn}" placeholder="请输入合约编号"/>
+                                        <span class="error" id="err_order_sn"></span>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                    <label class="form-title"><em class="require">*</em>平台收款总笔数</label>
+                                    <input type="text" class="form-control" name="pay_countpt" value="{$info.pay_countpt}" placeholder="请输入平台收款总笔数"/>
+                                    <span class="error" id="err_pay_countpt"></span>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label class="form-title"><em class="require">*</em>平台收款总金额</label>
+                                        <input type="text" class="form-control" name="pay_pricept" value="{$info.pay_pricept}" placeholder="请输入平台收款总金额"/>
+                                        <span class="error" id="err_pay_pricept"></span>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label class="form-title"><em class="require">*</em>乙方收款总笔数</label>
+                                        <input type="text" class="form-control" name="pay_countyf" value="{$info.pay_countyf}" placeholder="请输入乙方收款总笔数"/>
+                                        <span class="error" id="err_pay_countyf"></span>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label class="form-title"><em class="require">*</em>乙方收款总金额</label>
+                                        <input type="text" class="form-control" name="pay_priceyf" value="{$info.pay_priceyf}" placeholder="请输入乙方收款总金额"/>
+                                        <span class="error" id="err_pay_priceyf"></span>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label class="form-title"><em class="require">*</em>甲方用户(企业用户)</label>
+                                        <div class="form-inline">
+                                            <select class="input-group-select" multiple name="user_idj" id="user_idj">
+                                                {volist name="$user_list" id="user"}
+                                                <option value="{$user.user_id}" {if $info.user_idj==$user.user_id}selected{/if}>{$user.user_id}-{$user.mobile}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--                                    <div class="form-group col-md-12" >-->
+                                    <!--                                        <label class="form-title"><em class="require">*</em>甲方身份(企业用户)</label>-->
+                                    <!--                                        <div class="form-inline">-->
+                                    <!--                                            <select id="user_idjtype" class="input-group-select" name="user_idjtype">-->
+                                    <!--                                                <option value="1" {if $info.user_idjtype==1}selected{/if}>个人用户</option>-->
+                                    <!--                                                <option value="2" {if $info.user_idjtype==2}selected{/if}>企业用户</option>-->
+                                    <!--                                            </select>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
+                                    <div class="form-group col-md-12">
+                                        <label class="form-title"><em class="require">*</em>乙方用户(个人用户)</label>
+
+                                        <div class="form-inline">
+                                            <select class="input-group-select" multiple name="user_idy" id="user_idy">
+                                                {volist name="$user_list" id="user"}
+                                                <option value="{$user.user_id}" {if $info.user_idy==$user.user_id}selected{/if}>{$user.user_id}-{$user.mobile}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--                                    <div class="form-group col-md-12" >-->
+                                    <!--                                        <label class="form-title"><em class="require">*</em>乙方身份</label>-->
+                                    <!--                                        <div class="form-inline">-->
+                                    <!--                                            <select id="user_idytype" class="input-group-select" name="user_idytype">-->
+                                    <!--                                                <option value="1" {if $info.user_idytype==1}selected{/if}>个人用户</option>-->
+                                    <!--                                                <option value="2" {if $info.user_idytype==2}selected{/if}>企业用户</option>-->
+                                    <!--                                            </select>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
+                                    <!--                                    <div class="form-group col-md-12">-->
+                                    <!--                                        <label class="form-title"><em class="require">*</em>丙方用户</label>-->
+
+                                    <!--                                        <div class="form-inline">-->
+                                    <!--                                            <select class="input-group-select" multiple name="user_idb" id="user_idb">-->
+                                    <!--                                                {volist name="$userkf_list" id="userkf"}-->
+                                    <!--                                                <option value="{$userkf.user_id}" {if $info.user_idb==$userkf.user_id}selected{/if}>{$userkf.user_id}-{$userkf.mobile}</option>-->
+                                    <!--                                                {/volist}-->
+                                    <!--                                            </select>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
+                                    <!--                                    <div class="form-group  col-md-12">-->
+                                    <!--                                        <label><em class="require">*</em>合约文件</label>-->
+                                    <!--                                        <div class="upload-row">-->
+                                    <!--                                            <input type="hidden" name="src"  value="{$info.src}">-->
+                                    <!--                                            <a href="{$info.src}" id="myLink" >{$info.src}</a>-->
+                                    <!--                                            <div class="input-group-btn">-->
+                                    <!--                                                <button onclick="GetUploadify(1,'src','src','call_back','file')" class="btn btn-default" type="button">上传文件</button>-->
+                                    <!--                                            </div>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
+                                    <div class="form-group  col-md-12">
+                                        <label>上传附件</label>
+                                        <div class="upload-row upload-images">
+                                            <div class="upload-row-item" v-for="(item,index) in src" :key="item.id" style="position: relative;">
+                                                <img class="upload-img" :src="item.src ? item.src : '__STATIC__/images/upload.png'" v-if="item.type == 'image'">
+                                                <div class="upload-file" v-else>
+                                                    <a :href="item.src" target="_blank">{{item.name}}</a>
+                                                </div>
+                                                <button style="position: absolute;left: -10px;top: -10px;padding: 0;width: 20px;height: 20px;border-radius: 10px;display: flex;align-items: center;justify-content: center;letter-spacing: 0;" type="button" @click="shanchu('src',index)" class="btn btn-default"><span class="mdi mdi-close"></span></button>
+                                            </div>
+                                            <div class="input-group-btn">
+                                                <button onclick="GetUploadify(1,'src','src','call_back','file')" class="btn btn-default" type="button">上传文件</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--                                    <div class="form-group   col-md-12">-->
+                                    <!--                                            <label><em class="require">*</em>合约文件</label>-->
+
+                                    <!--                                            <div class="upload-row upload-images">-->
+                                    <!--                                                {volist name="$vo.src" id="srcs"}-->
+                                    <!--                                                <div class="upload-row-item" >-->
+                                    <!--                                                    {if $srcs.type=='image'}-->
+                                    <!--                                                    <img class="upload-img" src="{$srcs.src}">-->
+                                    <!--                                                    {else/}-->
+                                    <!--                                                        <div class="upload-file">-->
+                                    <!--                                                            <a href="{$srcs.src}" target="_blank">{$srcs.name}</a>-->
+                                    <!--                                                        </div>-->
+                                    <!--                                                    {/if}-->
+                                    <!--                                                    <button type="button" @click="shanchu('src',{$srcs})" class="btn btn-default"><span class="mdi mdi-close"></span></button>-->
+                                    <!--                                                </div>-->
+                                    <!--                                                {/volist}-->
+                                    <!--                                                <div class="input-group-btn">-->
+                                    <!--                                                    <button onclick="GetUploadify(1,'src','src','call_back','file')" class="btn btn-default" type="button">上传文件</button>-->
+                                    <!--                                                </div>-->
+                                    <!--                                            </div>-->
+                                    <!--                                    </div>-->
+
+                                    <div class="col-md-12">
+                                        <input type="hidden" name="{$info.pk}" value="{$info[$info.pk]}">
+                                        <button type="button" class="btn-theme submit-btn"  @click="tijiao">确定</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+
+{load href="__STATIC__/plugin/select2/select2.css"/}
+{load href="__STATIC__/plugin/select2/select2.js"/}
+{load href="__STATIC__/plugin/select2/i18n/zh-CN.js"/}
+<script type="text/javascript">
+    var _this;
+    var app = new Vue({
+        el: '#app',
+        data: {
+            src:  [],
+        },
+        created() {
+            _this = this;
+            if ('{$info.src}'){
+                _this.src=JSON.parse('{$info.src|raw}')
+            }
+        },
+        methods: {
+            shanchu(field, index) {
+                this[field].splice(index, 1);
+            },
+            tijiao(){
+                $('span.error').hide();
+                $('.verify').removeClass('has-error');
+                var url = "{:url('Voucher/add_edit_contract',[$info.pk=>$info[$info.pk]])}";
+                var data = $('#submit-form').serializeArray();
+                let params = {
+                    src: this.src,
+                };
+                data.forEach((item, index) => {
+                    params[item.name] = item.value
+                });
+                let type = "{$info.update_url?'PUT':'POST'}";
+                public_ajax(url,params,function (data) {
+                    if (data.code == 1) {
+                        showSuccessMsg(data.msg, function () {
+                            if (data.result.url) {
+                                parent.location.reload()
+                                // window.parent.location.href = data.result.url;
+                            }
+                        });
+                    } else if (data.code == 10) {
+                        showErrorMsg(data.msg);
+                        $.each(data.result, function(index, item) {
+                            $('#err_' + index).text(item).show();
+                            $('#err_' + index).parent().addClass('has-error');
+                        });
+                    } else {
+                        showErrorMsg(data.msg);
+                    }
+                },type);
+            }
+        },
+        mounted(){
+            let _this = this
+            window.call_back = function (fileurl_tmp, fileurl_id,fileurl_type,fileurl_name) {
+                var  tys='file'
+                const extension = fileurl_tmp.split(".").pop().toLowerCase();
+                console.log()
+                if(extension=='png' || extension=='jpg' || extension=='jpeg'){
+                    tys='image'
+                }else{
+                    fileurl_name='文件'
+                }
+                //作品附件
+                let item = {
+                    src : fileurl_tmp,
+                    type:tys,
+                    name:fileurl_name
+                }
+                console.log(item)
+                _this[fileurl_id].push(item)
+            }
+
+        }
+    });
+    $(function(){
+        function shanchu(field, index) {
+            this[field].splice(index, 1);
+        }
+        $('#user_idj').select2({
+                placeholder: '请选择甲方用户',
+                maximumSelectionLength:1,
+                language:'zh-CN',
+            }
+        );
+        $('#user_idy').select2({
+                placeholder: '请选择乙方用户',
+                maximumSelectionLength:1,
+                language:'zh-CN',
+            }
+        );
+        $('#user_idb').select2({
+                placeholder: '请选择丙方用户',
+                maximumSelectionLength:999999999999,
+                language:'zh-CN',
+            }
+        );
+        // $('.submit-btn').click(function () {
+        //     $('span.error').hide();
+        //     $('.form-group').removeClass('has-error');
+        //     var url = "{:url('Voucher/add_edit_contract',[$info.pk=>$info[$info.pk]])}";
+        //     var data = $('#submit-form').serialize();
+        //     $.ajax({
+        //         type: "POST",
+        //         url: url,
+        //         data: data,
+        //         dataType: 'json',
+        //         success: function (data) {
+        //             if (data.code == 1) {
+        //                 showSuccessMsg(data.msg, function () {
+        //                     if (data.result.url) {
+        //                         location.href = data.result.url;
+        //                     }
+        //                 });
+        //             } else if (data.code == 10) {
+        //                 showErrorMsg(data.msg);
+        //                 $.each(data.result, function(index, item) {
+        //                     $('#err_' + index).text(item).show();
+        //                     $('#err_' + index).parent().addClass('has-error');
+        //                 });
+        //             } else {
+        //                 showErrorMsg(data.msg);
+        //             }
+        //         },
+        //         error: function (XMLHttpRequest, textStatus, errorThrown) {
+        //             showErrorMsg("网络失败，请刷新后重试!");
+        //         }
+        //     });
+        // });
+    });
+
+    // function call_back(fileurl_tmp, fileurl_id,fileurl_type,fileurl_name) {
+    //     //作品附件
+    //     let item = {
+    //         src : fileurl_tmp,
+    //         id:Math.random(),
+    //         type:fileurl_type,
+    //         name:fileurl_name
+    //     }
+    //     console.log(item)
+    //     // this[fileurl_id].push(item)
+    // }
+    //     function call_back(fileurl_tmp,fileurl_id)
+    //     {
+    //         $("[name="+fileurl_id+"]").val(fileurl_tmp);
+    //         $("#"+fileurl_id).attr('src', fileurl_tmp);
+    //         var link = document.getElementById('myLink');
+    //
+    // // 修改href属性
+    //         link.href = fileurl_tmp;
+    //
+    // // 修改文本内容
+    //         link.textContent =fileurl_tmp;
+    //     }
+</script>
+</body>
+</html>

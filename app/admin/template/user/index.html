@@ -1,0 +1,227 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    {include file='public:left-menu'/}
+    <!--End 左侧导航-->
+    <!--头部信息-->
+    {include file='public:nav-header' title="会员管理" subTitle="会员列表"/}
+    <!--End 头部信息-->
+
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-toolbar">
+                <!--                <div class="toolbar-btn-action">-->
+                <!--                  <a class="btn btn-label btn-theme" href="{:url('User/add_user')}"><label><i class="mdi mdi-plus-circle"></i></label> 添加会员</a>-->
+                <!--                  <a class="btn btn-label btn-danger" href="#!"><label><i class="mdi mdi-delete"></i></label> 删除会员</a>-->
+                <!--                </div>-->
+                <div class="toolbar-btn-action">
+                  <a class="btn btn-label btn-theme" onclick="submit1(2)" href="javascript:;"><label><i
+                          class="mdi mdi-buffer"></i></label> 导出数据</a>
+                </div>
+                <div class="card-toolbar-center">
+                  <a href="" class="table-btn btn-dark"><i class="mdi mdi-replay"></i></a>
+                  <button class="table-btn btn-theme">共{$list->total()}条记录 当前第{$list->currentPage()}页</button>
+                </div>
+                <form class="table-form" method="post" action="">
+                  <input type="hidden" name="ids">
+                  <div class="table-form-group">
+                    <input data-type="time" readonly id="start_time" name="start_time" type="text" value="{$start_time}">
+                    <button class="btn btn-default" type="button">开始时间</button>
+                  </div>
+                  <div class="table-form-group">
+                    <input data-type="time" name="end_time" id="end_time" type="text" value="{$end_time}" readonly>
+                    <button class="btn btn-default" type="button">结束时间</button>
+                  </div>
+                  <div class="table-form-group">
+                    <select name="is_lock" class="input-group-select">
+                      <option value="">是否启用</option>
+                      <option value="0" {if $Request.param.is_lock=='0'}selected{/if}>是</option>
+                      <option value="1" {if $Request.param.is_lock=='1'}selected{/if}>否</option>
+                    </select>
+                    <select name="is_kf" class="input-group-select">
+                      <option value="">是否客服</option>
+                      <option value="1" {if $Request.param.is_kf=='1'}selected{/if}>是</option>
+                      <option value="0" {if $Request.param.is_kf=='0'}selected{/if}>否</option>
+                    </select>
+                    <select name="kf_show" class="input-group-select">
+                      <option value="">客服是否显示（资金代管）</option>
+                      <option value="1" {if $Request.param.kf_show=='1'}selected{/if}>是</option>
+                      <option value="0" {if $Request.param.kf_show=='0'}selected{/if}>否</option>
+                    </select>
+                    <input type="text" value="{$Request.param.search_key}" name="search_key"
+                            placeholder="查询真实姓名|企业名称|手机号">
+                    <button class="btn btn-default" onclick="submit1(1)" type="button">搜索</button>
+                  </div>
+                </form>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                    <tr>
+                      <th>
+                        <label class="table-checkbox">
+                          <input type="checkbox" id="check-all"><span></span>
+                        </label>
+                      </th>
+                      <th style="width: 100px">操作</th>
+                      <th>ID</th>
+                      <th>手机号码</th>
+                      <th>真实姓名</th>
+                      <th>企业名称</th>
+                      <th>微信号</th>
+                      <th>客服名称</th>
+                      <th>是否客服</th>
+                      <th>微信二维码（客服使用）</th>
+                      <th>客服是否显示（资金代管）</th>
+                      <th>启用</th>
+                      <th>最后登录时间</th>
+                      <th>注册时间</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {if $list->isEmpty()}
+                    <tr>
+                      <td class="no-data" colspan="50">
+                        <i class="mdi mdi-alert-decagram"></i>没有符合条件的记录
+                      </td>
+                    </tr>
+                    {else/}
+                    {volist name="$list" id="vo"}
+                    <tr>
+                      <td>
+                        <label class="table-checkbox">
+                          <input type="checkbox" class="checkbox" value="{$vo[$vo.pk]}"><span></span>
+                        </label>
+                      </td>
+                      <td>
+                        <a class="table-btn btn-theme" href="{:url('User/detail',['user_id'=>$vo[$vo.pk]])}"><i class="mdi mdi-pencil"></i>详情</a>
+                      </td>
+                      <td>{$vo.user_id}</td>
+                      <td><a href="{:url('User/detail',['user_id'=>$vo.user_id])}">{$vo.mobile}</a></td>
+                      <td>{$vo.realname|default='无'}</td>
+                      <td>{$vo.firm_name|default='无'}</td>
+                      <td>{$vo.weixin|default='无'}</td>
+                      <td>{$vo.kf_name|default='无'}</td>
+                      <td><span data-id="{$vo[$vo.pk]}" class="is_kf mdi {$vo.is_kf==1 ? 'text-success mdi-checkbox-marked-circle-outline' : 'text-red mdi-close-circle-outline'}"> {$vo.kf_text}</span></td>
+                      <td class="img"><img title="点击图片看大图" data-toggle="tooltip" class="table-img" src="{$vo.kf_img}"></td>
+                      <td><span data-id="{$vo[$vo.pk]}" class="kf_show mdi {$vo.kf_show==1 ? 'text-success mdi-checkbox-marked-circle-outline' : 'text-red mdi-close-circle-outline'}"> {$vo.kf_show_text}</span></td>
+
+                      <td><span data-id="{$vo[$vo.pk]}" class="lock mdi {$vo.is_lock==0 ? 'text-success mdi-checkbox-marked-circle-outline' : 'text-red mdi-close-circle-outline'}"> {$vo.status_text}</span></td>
+                      <td>{if $vo.last_login eq 0}无{else/}{$vo.last_login|date="Y-m-d H:i:s"}{/if}</td>
+                      <td>{$vo.reg_time}</td>
+                    </tr>
+                    {/volist}
+                    {/if}
+                    </tbody>
+                  </table>
+                </div>
+                <!--分页-->
+                <div class="page">
+                  {$page|raw}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+</div>
+<script src="__STATIC__/plugin/laydate/laydate/laydate.js"></script>
+<script type="text/javascript">
+  $(function(){
+    layer.photos({
+      photos: '.img'
+      ,anim: 5
+    });
+    $('#start_time').layDate();
+    $('#end_time').layDate();
+    $('.lock').on('click',function () {
+      if ($(this).hasClass('text-success')){
+        var is_lock=1;
+        var remove='text-success mdi-checkbox-marked-circle-outline';
+        var add='text-red mdi-close-circle-outline';
+        var text=' 禁用';
+      }else {
+        var is_lock=0;
+        var remove='text-red mdi-close-circle-outline';
+        var add='text-success mdi-checkbox-marked-circle-outline';
+        var text=' 正常';
+      }
+      var id=$(this).attr('data-id');
+      var obj=$(this);
+      changeTableVal('users','is_lock',id,is_lock,function (res) {
+        if(res.code==1){
+          obj.removeClass(remove).addClass(add).text(text);
+        }
+      });
+    }); $('.kf_show').on('click',function () {
+      if ($(this).hasClass('text-success')) {
+        var kf_show = 0;
+        var add = 'text-red mdi-close-circle-outline';
+        var remove = 'text-success mdi-checkbox-marked-circle-outline';
+        var text = ' 否';
+      } else {
+        var kf_show = 1;
+        var add = 'text-success mdi-checkbox-marked-circle-outline';
+        var remove = 'text-red mdi-close-circle-outline';
+        var text = ' 是';
+      }
+      var id=$(this).attr('data-id');
+      var obj=$(this);
+      changeTableVal('users','kf_show',id,kf_show,function (res) {
+        if(res.code==1){
+          obj.removeClass(remove).addClass(add).text(text);
+        }
+      });
+    });
+    $('.is_kf').on('click', function () {
+      if ($(this).hasClass('text-success')) {
+        var is_kf = 0;
+        var add = 'text-red mdi-close-circle-outline';
+        var remove = 'text-success mdi-checkbox-marked-circle-outline';
+        var text = ' 否';
+      } else {
+        var is_kf = 1;
+        var add = 'text-success mdi-checkbox-marked-circle-outline';
+        var remove = 'text-red mdi-close-circle-outline';
+        var text = ' 是';
+      }
+      var id = $(this).attr('data-id');
+      var obj = $(this);
+      changeTableVal('users', 'is_kf', id, is_kf, function (res) {
+        if (res.code == 1) {
+          obj.removeClass(remove).addClass(add).text(text);
+        }
+      });
+    });
+  });
+  function submit1(type) {
+    if (type==1){
+      $('[name=ids]').val('');
+      var url="{:url('User/index')}";
+    }else {
+      var checkbox = $('.checkbox:checked');
+      var ids = [];
+      $.each(checkbox, function (index, item) {
+        ids.push(item.value)
+      });
+      $('[name=ids]').val(ids);
+      var url = "{:url('User/export_user')}";
+    }
+    $('.table-form').attr('action',url).submit();
+  }
+</script>
+</body>
+</html>

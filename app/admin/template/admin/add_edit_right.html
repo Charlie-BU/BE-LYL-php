@@ -1,0 +1,171 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    {include file='public:left-menu'/}
+    <!--End 左侧导航-->
+    <!--头部信息-->
+    {include file='public:nav-header' title="权限管理" subTitle="添加编辑权限资源"/}
+    <!--End 头部信息-->
+
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <form method="post" id="submit-form" class="row">
+                  <div class="form-group col-md-12">
+                    <label class="form-title"><em class="require">*</em>权限资源名称</label>
+                    <input type="text" class="form-control" name="name" value="{$info.name}" placeholder="请输入权限资源名称"/>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <div class="form-inline">
+                      <span class="tit">所属分组</span>
+                      <select class="input-group-select" name="group">
+                        {volist name="$modules" id="module"}
+                        <option value="{$key}" {if $info.group==$key}selected{/if}>{$module}</option>
+                        {/volist}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <div class="form-inline">
+                      <span class="tit" style="width: 70px">选择控制器</span>
+                      <select id="controller" class="input-group-select" onchange="get_act_list(this)">
+                        <option value="">选择控制器</option>
+                        {volist name="$planList" id="plan"}
+                        <option value="{$plan}">{$plan}</option>
+                        {/volist}
+                      </select>
+                      <div class="checkbox-container">
+<!--                        <label class="lyear-checkbox checkbox-theme">-->
+<!--                          <input type="checkbox"><span>信息</span>-->
+<!--                        </label>-->
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label class="form-title">权限码</label>
+                    <div class="list" id="list">
+                      {volist name="$rights" id="right"}
+                      <div class="input-group">
+                        <input type="text" name="right[]" readonly class="form-control" value="{$right}">
+                        <span class="input-group-btn">
+                          <button class="btn btn-default del-btn" type="button">删除</button>
+                        </span>
+                      </div>
+                      {/volist}
+                    </div>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <input type="hidden" name="{$info.pk}" value="{$info[$info.pk]}">
+                    <button type="button" class="btn-theme submit-btn">确定</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+</div>
+<style>
+  .list{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .list .input-group{
+    width: 25%;
+    padding: 0 10px;
+    margin-bottom: 5px;
+  }
+  .checkbox-container{
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 10px;
+    color: var(--text-color);
+  }
+  .checkbox-container .lyear-checkbox{
+    margin-bottom: 5px;
+    margin-right: 5px;
+  }
+</style>
+<script type="text/javascript">
+  $(function(){
+      $(document).on('change','.checkbox-container input:checkbox',function () {
+          var val=$(this).val();
+          var checked=$(this).is(':checked');
+          var controller=$('#controller').val();
+          if (checked){
+              var item=$('#list .input-group input[value=\''+controller+'@'+val+'\']');
+              var len=item.length;
+              if (len==0){
+                  var html='<div class="input-group">' +
+                      '<input type="text" name="right[]" readonly class="form-control" value="'+controller+'@'+val+'">' +
+                      '<span class="input-group-btn">' +
+                      '<button class="btn btn-default del-btn" type="button">删除</button>' +
+                      '</span>' +
+                      '</div>';
+                  $('#list').append(html);
+              }
+          }else {
+              $('#list .input-group input[value=\''+controller+'@'+val+'\']').parent().remove();
+          }
+      });
+      $(document).on('click','.del-btn',function () {
+          $(this).parent().parent().remove();
+      });
+    $('.submit-btn').click(function () {
+      $('span.error').hide();
+      $('.form-group').removeClass('has-error');
+      var url = "{:url('Admin/add_edit_right',[$info.pk=>$info[$info.pk]])}";
+      var data = $('#submit-form').serialize();
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function (data) {
+          if (data.code == 1) {
+            showSuccessMsg(data.msg, function () {
+              if (data.result.url) {
+                location.href = data.result.url;
+              }
+            });
+          } else {
+            showErrorMsg(data.msg);
+          }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+          showErrorMsg("网络失败，请刷新后重试!");
+        }
+      });
+    });
+  });
+  function get_act_list(obj){
+      var controller=$(obj).val();
+      if (controller==''){
+          $('.checkbox-container').empty();
+      }else {
+          $.ajax({
+              url: "{:url('Admin/ajax_get_action')}",
+              type:'get',
+              data: {'controller':$(obj).val()},
+              dataType:'html',
+              success:function(res){
+                  $('.checkbox-container').empty().append(res);
+                  // chkbox_bind();
+                  // updateActCheck();
+              }
+          });
+      }
+  }
+</script>
+</body>
+</html>

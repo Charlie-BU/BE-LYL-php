@@ -1,0 +1,123 @@
+{include file='public:header-css'/}
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        {include file='public:left-menu'/}
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        {include file='public:nav-header' title="系统管理" subTitle="系统设置"/}
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <ul class="nav nav-tabs page-tabs">
+                                {volist name="$group_list" id="group"}
+                                <li class="{$key==$inc_type ?'active':''}"><a href="{:url('System/index',['inc_type'=>$key])}">{$group}</a></li>
+                                {/volist}
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active">
+                                    <form action="#!" method="post" class="edit-form">
+                                        <div class="form-group">
+                                            <label for="store_title"><em class="require">*</em>网站标题</label>
+                                            <input class="form-control" type="text" id="store_title" name="store_title"
+                                                   value="{$config.store_title}" placeholder="请输入网站标题">
+                                            <small class="help">网站标题，将显示在前台顶部欢迎信息等位置</small>
+                                        </div>
+<!--                                        <div class="form-group">-->
+<!--                                            <label for="store_phone"><em class="require">*</em>客服电话</label>-->
+<!--                                            <input class="form-control" type="text" id="store_phone" name="store_phone"-->
+<!--                                                   value="{$config.store_phone}" placeholder="请输入客服电话">-->
+<!--                                            <small class="help">网站客服电话</small>-->
+<!--                                        </div>-->
+<!--                                        <div class="form-group">-->
+<!--                                            <label><em class="require">*</em>网站标题图标</label>-->
+<!--                                            <div class="upload-row">-->
+<!--                                                <img class="upload-img" id="store_ico" src="{$config.store_ico|default='__STATIC__/images/upload.png'}">-->
+<!--                                                <input type="hidden" name="store_ico" value="{$config.store_ico}">-->
+<!--                                                <div class="input-group-btn">-->
+<!--                                                    <button onclick="GetUploadify(1,'store_ico','logo','call_back')" class="btn btn-default" type="button">上传图片</button>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="form-group">-->
+<!--                                            <label><em class="require">*</em>平台后台顶部Logo</label>-->
+<!--                                            <div class="upload-row">-->
+<!--                                                <img class="upload-img" id="admin_home_logo" src="{$config.admin_home_logo|default='__STATIC__/images/upload.png'}">-->
+<!--                                                <input type="hidden" name="admin_home_logo" value="{$config.admin_home_logo}">-->
+<!--                                                <div class="input-group-btn">-->
+<!--                                                    <button onclick="GetUploadify(1,'admin_home_logo','logo','call_back')" class="btn btn-default" type="button">上传图片</button>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="form-group">-->
+<!--                                            <label for="hot_keywords">热门搜索词</label>-->
+<!--                                            <input class="form-control" type="text" id="hot_keywords" name="hot_keywords"-->
+<!--                                                   value="{$config.hot_keywords}" placeholder="请输入热门搜索词">-->
+<!--                                            <small class="help">例如:衣|手机|内衣</small>-->
+<!--                                        </div>-->
+
+                                        <div class="form-group">
+                                       <div class="form-group">
+                                            <label for="store_phone"><em class="require">*</em>实际开票比例</label>
+                                            <input class="form-control" type="text" id="bilikp" name="bilikp"
+                                                   value="{$config.bilikp}" placeholder="请输入实际开票比例">
+                                            <small class="help">实际开票比例</small>
+                                        </div>
+                                            <div class="form-group">
+                                            <label for="store_phone"><em class="require">*</em>提示说明</label>
+                                            <input class="form-control" type="text" id="kf_desc" name="kf_desc"
+                                                   value="{$config.kf_desc}" placeholder="请输入提示说明">
+                                            <small class="help">提示说明</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="store_phone"><em class="require">*</em>平台打款名称</label>
+                                            <input class="form-control" type="text" id="dk_name" name="dk_name"
+                                                   value="{$config.dk_name}" placeholder="请输入平台打款名称">
+                                            <small class="help">平台打款名称</small>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="hidden" name="inc_type" value="{$inc_type}">
+                                            <button type="button" class="btn-theme submit-btn">确定</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('.submit-btn').on('click',function () {
+            var url = "{:url('System/handle')}";
+            var data = $('.edit-form').serialize();
+            public_ajax(url,data,function (res) {
+                if (res.code == 1) {
+                    showSuccessMsg(res.msg);
+                } else {
+                    showErrorMsg(res.msg);
+                }
+            })
+        })
+    });
+    function call_back(fileurl_tmp,fileurl_id)
+    {
+        $("[name="+fileurl_id+"]").val(fileurl_tmp);
+        $("#"+fileurl_id).attr('src', fileurl_tmp);
+    }
+</script>
+</body>
+</html>
